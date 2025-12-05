@@ -1,1 +1,1 @@
-Nothing needs to be added to .gitignore for this change list. The only added file is `district_map.html`, which is a source file that should be tracked in version control. No build artifacts, dependencies, or temporary files are present in the changes.
+Nothing needs to be added to .gitignore since only a source file (index.html) was modified and there are no build artifacts, dependencies, or temporary files in the changes.
