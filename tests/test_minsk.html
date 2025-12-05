@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Тест данных о Минске</title>
+
+    <!-- Test Styles -->
+    <link rel="stylesheet" href="../assets/css/test.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>🏙️ Тест данных о Минске</h1>
+
+      <div id="loading">⏳ Загрузка данных...</div>
+      <div id="content" style="display: none"></div>
+    </div>
+
+    <script>
+      // Загрузка и проверка данных
+      fetch("../assets/data/belarus-regions.geojson")
+        .then((response) => response.json())
+        .then((data) => {
+          const loading = document.getElementById("loading");
+          const content = document.getElementById("content");
+
+          // Поиск данных о Минске
+          const minskData = data.features.find(
+            (f) => f.properties.name === "Минск"
+          );
+
+          if (minskData) {
+            loading.innerHTML =
+              '<span class="success">✅ Данные о Минске успешно загружены!</span>';
+
+            const props = minskData.properties;
+            const density = (props.population / props.area).toFixed(1);
+
+            let nationalitiesHTML =
+              '<div class="nationalities"><strong>Национальный состав (перепись 2019):</strong>';
+            Object.keys(props.nationalities).forEach((nationality) => {
+              nationalitiesHTML += `<div class="nationality-item">• ${nationality}: ${props.nationalities[nationality]}%</div>`;
+            });
+            nationalitiesHTML += "</div>";
+
+            content.innerHTML = `
+                        <div class="status">
+                            🏛️ Столица Республики Беларусь
+                        </div>
+                        
+                        <div class="info-card">
+                            <div class="info-item">
+                                <span class="label">👥 Население:</span>
+                                <span class="value">${props.population.toLocaleString(
+                                  "ru-RU"
+                                )} чел.</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">📏 Площадь:</span>
+                                <span class="value">${props.area.toLocaleString(
+                                  "ru-RU"
+                                )} км²</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">📊 Плотность:</span>
+                                <span class="value">${density} чел/км²</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">🎨 Цвет маркера:</span>
+                                <span class="value">
+                                    <span style="display: inline-block; width: 30px; height: 30px; background: ${
+                                      props.color
+                                    }; border-radius: 50%; border: 3px solid white; vertical-align: middle;"></span>
+                                    ${props.color}
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">📍 Координаты:</span>
+                                <span class="value">[${
+                                  minskData.geometry.coordinates[1]
+                                }, ${minskData.geometry.coordinates[0]}]</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">🗺️ Тип геометрии:</span>
+                                <span class="value">${
+                                  minskData.geometry.type
+                                }</span>
+                            </div>
+                        </div>
+                        
+                        ${nationalitiesHTML}
+                        
+                        <a href="../index.html" class="button">
+                            🗺️ Открыть интерактивную карту
+                        </a>
+                    `;
+
+            content.style.display = "block";
+
+            setTimeout(() => {
+              loading.style.display = "none";
+            }, 2000);
+          } else {
+            loading.innerHTML =
+              '<span class="error">❌ Данные о Минске не найдены в GeoJSON файле!</span>';
+          }
+        })
+        .catch((error) => {
+          document.getElementById(
+            "loading"
+          ).innerHTML = `<span class="error">❌ Ошибка загрузки данных: ${error.message}</span>`;
+        });
+    </script>
+  </body>
+</html>

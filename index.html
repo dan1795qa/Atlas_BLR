@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Интерактивная карта Беларуси</title>
+
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="assets/css/main.css" />
+  </head>
+  <body>
+    <header class="navbar">
+      <nav class="navbar-nav">
+        <div class="nav-item dropdown">
+          <button class="nav-link">Административное деление</button>
+          <div class="dropdown-menu">
+            <a href="#" onclick="toggleDistrictMode(); return false;" class="dropdown-item">Области</a>
+            <a href="#" onclick="toggleDistrictMode(); return false;" class="dropdown-item">Районы</a>
+          </div>
+        </div>
+
+        <div class="nav-item dropdown">
+          <button class="nav-link">Гидрография</button>
+          <div class="dropdown-menu">
+            <a href="#" onclick="toggleLayer('rivers'); return false;" class="dropdown-item">Реки</a>
+            <a href="#" onclick="toggleLayer('lakes'); return false;" class="dropdown-item">Озера (Водохранилища)</a>
+          </div>
+        </div>
+
+        <div class="nav-item dropdown">
+          <button class="nav-link">Дороги</button>
+          <div class="dropdown-menu">
+            <a href="#" onclick="toggleLayer('roads'); return false;" class="dropdown-item">Автомобильные дороги</a>
+            <a href="#" onclick="toggleLayer('railways'); return false;" class="dropdown-item">Железные дороги</a>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <a href="#" onclick="toggleLayer('relief'); return false;" class="nav-link">Рельеф</a>
+        </div>
+      </nav>
+    </header>
+
+    <div id="map"></div>
+
+    <div class="legend">
+      <div class="legend-controls">
+        <button id="toggleMode" class="mode-toggle">🏛️ Районы</button>
+      </div>
+      <h3>Области Беларуси</h3>
+      <div class="legend-item" data-region="Минская область">
+        <input
+          type="checkbox"
+          class="region-toggle"
+          id="region-minsk"
+          checked
+        />
+        <div class="legend-color" style="background: #4169e1"></div>
+        <label for="region-minsk" class="legend-label">Минская</label>
+      </div>
+      <div class="legend-item" data-region="Брестская область">
+        <input
+          type="checkbox"
+          class="region-toggle"
+          id="region-brest"
+          checked
+        />
+        <div class="legend-color" style="background: #32cd32"></div>
+        <label for="region-brest" class="legend-label">Брестская</label>
+      </div>
+      <div class="legend-item" data-region="Гродненская область">
+        <input
+          type="checkbox"
+          class="region-toggle"
+          id="region-grodno"
+          checked
+        />
+        <div class="legend-color" style="background: #ff6347"></div>
+        <label for="region-grodno" class="legend-label">Гродненская</label>
+      </div>
+      <div class="legend-item" data-region="Витебская область">
+        <input
+          type="checkbox"
+          class="region-toggle"
+          id="region-vitebsk"
+          checked
+        />
+        <div class="legend-color" style="background: #9370db"></div>
+        <label for="region-vitebsk" class="legend-label">Витебская</label>
+      </div>
+      <div class="legend-item" data-region="Гомельская область">
+        <input
+          type="checkbox"
+          class="region-toggle"
+          id="region-gomel"
+          checked
+        />
+        <div class="legend-color" style="background: #ff8c00"></div>
+        <label for="region-gomel" class="legend-label">Гомельская</label>
+      </div>
+      <div class="legend-item" data-region="Могилевская область">
+        <input
+          type="checkbox"
+          class="region-toggle"
+          id="region-mogilev"
+          checked
+        />
+        <div class="legend-color" style="background: #ffd700"></div>
+        <label for="region-mogilev" class="legend-label">Могилевская</label>
+      </div>
+      <div
+        class="legend-item legend-separator"
+        style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #ddd"
+      >
+        <div
+          class="legend-color capital-marker"
+          style="
+            background: #ff6347;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            border: 2px solid white;
+          "
+        ></div>
+        <span class="legend-label">🏛️ Столица</span>
+      </div>
+      <div class="legend-item">
+        <div
+          class="legend-color city-marker-pulse"
+          style="
+            background: #2196f3;
+            border-radius: 50%;
+            width: 14px;
+            height: 14px;
+            border: 1.5px solid white;
+          "
+        ></div>
+        <span class="legend-label">🏙️ Обл. центры</span>
+      </div>
+    </div>
+
+    <div id="infoPanel" class="info-panel">
+      <button class="close-btn" onclick="closeInfoPanel()">×</button>
+      <div id="infoPanelHeader"></div>
+      <div id="infoPanelContent"></div>
+    </div>
+
+    <!-- Модальное окно выбора районов -->
+    <div id="districtModal" class="modal">
+      <div class="modal-content">
+        <button class="modal-close" onclick="closeDistrictModal()">×</button>
+        <h2>Выберите область</h2>
+        <div id="regionsList" class="regions-list"></div>
+      </div>
+    </div>
+
+    <!-- Модальное окно списка районов -->
+    <div id="districtsListModal" class="modal">
+      <div class="modal-content">
+        <button class="modal-close" onclick="closeDistrictsListModal()">
+          ×
+        </button>
+        <h2 id="districtRegionTitle">Районы области</h2>
+        <div id="districtsList" class="districts-list"></div>
+      </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Main Script -->
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>

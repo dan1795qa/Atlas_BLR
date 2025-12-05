@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Проверка позиций маркеров</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+      }
+      #map {
+        height: 100vh;
+        width: 100%;
+      }
+      .info-box {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        max-width: 300px;
+      }
+      .city-item {
+        margin: 5px 0;
+        padding: 5px;
+        border-left: 3px solid #2196f3;
+        padding-left: 10px;
+      }
+      .coords {
+        font-size: 11px;
+        color: #666;
+        font-family: monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div class="info-box">
+      <h3 style="margin-top: 0">Координаты городов</h3>
+      <div id="cities-list"></div>
+    </div>
+
+    <script>
+      // Инициализация карты
+      const map = L.map("map").setView([53.7098, 27.9534], 7);
+
+      // Базовый слой
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap contributors",
+        maxZoom: 18,
+        minZoom: 6,
+      }).addTo(map);
+
+      // Координаты городов (lat, lng)
+      const cities = {
+        Минск: { coords: [53.9006, 27.559], color: "#FF6347", size: 35 },
+        Брест: { coords: [52.0975, 23.734], color: "#4CAF50", size: 25 },
+        Витебск: { coords: [55.1904, 30.2049], color: "#2196F3", size: 25 },
+        Гомель: { coords: [52.4345, 30.9754], color: "#FF9800", size: 25 },
+        Гродно: { coords: [53.6884, 23.8258], color: "#9C27B0", size: 25 },
+        Могилев: { coords: [53.9007, 30.3313], color: "#F44336", size: 25 },
+      };
+
+      const citiesList = document.getElementById("cities-list");
+
+      // Добавление маркеров
+      Object.keys(cities).forEach((cityName) => {
+        const city = cities[cityName];
+        const coords = city.coords;
+        const size = city.size;
+
+        // Создание маркера с точной привязкой к центру
+        const icon = L.divIcon({
+          className: "custom-marker",
+          html: `<div style="
+                    background-color: ${city.color};
+                    width: ${size}px;
+                    height: ${size}px;
+                    border-radius: 50%;
+                    border: 3px solid white;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    position: relative;
+                ">
+                    <!-- Крестик в центре для точности -->
+                    <div style="
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        width: 2px;
+                        height: 10px;
+                        background: white;
+                        transform: translate(-50%, -50%);
+                    "></div>
+                    <div style="
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        width: 10px;
+                        height: 2px;
+                        background: white;
+                        transform: translate(-50%, -50%);
+                    "></div>
+                </div>`,
+          iconSize: [size, size],
+          iconAnchor: [size / 2, size / 2], // Центр маркера
+        });
+
+        const marker = L.marker(coords, { icon: icon }).addTo(map);
+
+        marker.bindTooltip(
+          `<b>${cityName}</b><br>lat: ${coords[0]}<br>lng: ${coords[1]}`,
+          {
+            permanent: false,
+            direction: "top",
+          }
+        );
+
+        // Добавление в список
+        citiesList.innerHTML += `
+                <div class="city-item">
+                    <strong>${cityName}</strong><br>
+                    <span class="coords">lat: ${coords[0]}, lng: ${coords[1]}</span>
+                </div>
+            `;
+
+        // Клик для центрирования
+        marker.on("click", function () {
+          map.setView(coords, 13);
+        });
+      });
+
+      console.log(
+        "Тестовая карта загружена. Проверьте точность расположения маркеров."
+      );
+    </script>
+  </body>
+</html>
