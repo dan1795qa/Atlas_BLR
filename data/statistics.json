@@ -1,0 +1,270 @@
+{
+  "regions": {
+    "Минская область": {
+      "population": 1480000,
+      "area": 39854,
+      "density": 37.1,
+      "districts": 22,
+      "cities": 24,
+      "urbanPopulation": 76.5,
+      "gdpPerCapita": 8500,
+      "unemployment": 0.4,
+      "averageSalary": 1450,
+      "majorIndustries": ["Химическая промышленность", "Машиностроение", "Пищевая промышленность"],
+      "agriculturalLand": 52.3,
+      "forestCoverage": 37.8,
+      "waterBodies": 2.1
+    },
+    "Брестская область": {
+      "population": 1378000,
+      "area": 32787,
+      "density": 42.0,
+      "districts": 16,
+      "cities": 20,
+      "urbanPopulation": 68.3,
+      "gdpPerCapita": 6200,
+      "unemployment": 0.5,
+      "averageSalary": 1150,
+      "majorIndustries": ["Пищевая промышленность", "Легкая промышленность", "Деревообработка"],
+      "agriculturalLand": 45.8,
+      "forestCoverage": 38.2,
+      "waterBodies": 3.5
+    },
+    "Витебская область": {
+      "population": 1150000,
+      "area": 40051,
+      "density": 28.7,
+      "districts": 21,
+      "cities": 19,
+      "urbanPopulation": 74.8,
+      "gdpPerCapita": 5900,
+      "unemployment": 0.6,
+      "averageSalary": 1100,
+      "majorIndustries": ["Нефтепереработка", "Машиностроение", "Легкая промышленность"],
+      "agriculturalLand": 38.5,
+      "forestCoverage": 40.2,
+      "waterBodies": 4.8
+    },
+    "Гомельская область": {
+      "population": 1405000,
+      "area": 40372,
+      "density": 34.8,
+      "districts": 21,
+      "cities": 17,
+      "urbanPopulation": 77.9,
+      "gdpPerCapita": 6800,
+      "unemployment": 0.5,
+      "averageSalary": 1200,
+      "majorIndustries": ["Нефтехимия", "Машиностроение", "Пищевая промышленность"],
+      "agriculturalLand": 41.2,
+      "forestCoverage": 44.5,
+      "waterBodies": 2.8
+    },
+    "Гродненская область": {
+      "population": 1030000,
+      "area": 25127,
+      "density": 41.0,
+      "districts": 17,
+      "cities": 14,
+      "urbanPopulation": 69.8,
+      "gdpPerCapita": 6500,
+      "unemployment": 0.5,
+      "averageSalary": 1180,
+      "majorIndustries": ["Химия и нефтехимия", "Пищевая промышленность", "Легкая промышленность"],
+      "agriculturalLand": 48.7,
+      "forestCoverage": 33.4,
+      "waterBodies": 1.9
+    },
+    "Могилевская область": {
+      "population": 1025000,
+      "area": 29068,
+      "density": 35.3,
+      "districts": 21,
+      "cities": 15,
+      "urbanPopulation": 72.5,
+      "gdpPerCapita": 5700,
+      "unemployment": 0.6,
+      "averageSalary": 1080,
+      "majorIndustries": ["Химическая промышленность", "Машиностроение", "Пищевая промышленность"],
+      "agriculturalLand": 47.2,
+      "forestCoverage": 35.8,
+      "waterBodies": 1.5
+    }
+  },
+  "cities": {
+    "Минск": {
+      "population": 2020600,
+      "area": 348.84,
+      "founded": 1067,
+      "elevation": 220,
+      "timeZone": "UTC+3",
+      "postalCode": "220000-220141",
+      "phoneCode": "+375 17",
+      "districts": 9,
+      "universities": 31,
+      "hospitals": 48,
+      "gdpShare": 25.3,
+      "transportNetwork": {
+        "metroLines": 2,
+        "metroStations": 29,
+        "busRoutes": 145,
+        "trolleybusRoutes": 62,
+        "tramRoutes": 8
+      }
+    },
+    "Гомель": {
+      "population": 526000,
+      "area": 139.77,
+      "founded": 1142,
+      "elevation": 144,
+      "timeZone": "UTC+3",
+      "postalCode": "246000-246050",
+      "phoneCode": "+375 232",
+      "districts": 4,
+      "universities": 8,
+      "hospitals": 12,
+      "gdpShare": 5.2,
+      "transportNetwork": {
+        "metroLines": 0,
+        "busRoutes": 58,
+        "trolleybusRoutes": 18,
+        "tramRoutes": 6
+      }
+    },
+    "Могилев": {
+      "population": 374000,
+      "area": 118.50,
+      "founded": 1267,
+      "elevation": 192,
+      "timeZone": "UTC+3",
+      "postalCode": "212000-212040",
+      "phoneCode": "+375 222",
+      "districts": 2,
+      "universities": 6,
+      "hospitals": 9,
+      "gdpShare": 3.8,
+      "transportNetwork": {
+        "metroLines": 0,
+        "busRoutes": 42,
+        "trolleybusRoutes": 10,
+        "tramRoutes": 0
+      }
+    },
+    "Витебск": {
+      "population": 364000,
+      "area": 134.60,
+      "founded": 974,
+      "elevation": 185,
+      "timeZone": "UTC+3",
+      "postalCode": "210000-210040",
+      "phoneCode": "+375 212",
+      "districts": 3,
+      "universities": 7,
+      "hospitals": 10,
+      "gdpShare": 3.5,
+      "transportNetwork": {
+        "metroLines": 0,
+        "busRoutes": 48,
+        "trolleybusRoutes": 12,
+        "tramRoutes": 4
+      }
+    },
+    "Гродно": {
+      "population": 368000,
+      "area": 142.11,
+      "founded": 1128,
+      "elevation": 135,
+      "timeZone": "UTC+3",
+      "postalCode": "230000-230030",
+      "phoneCode": "+375 152",
+      "districts": 2,
+      "universities": 5,
+      "hospitals": 8,
+      "gdpShare": 3.4,
+      "transportNetwork": {
+        "metroLines": 0,
+        "busRoutes": 45,
+        "trolleybusRoutes": 6,
+        "tramRoutes": 0
+      }
+    },
+    "Брест": {
+      "population": 350000,
+      "area": 146.12,
+      "founded": 1019,
+      "elevation": 141,
+      "timeZone": "UTC+3",
+      "postalCode": "224000-224030",
+      "phoneCode": "+375 162",
+      "districts": 2,
+      "universities": 4,
+      "hospitals": 7,
+      "gdpShare": 3.2,
+      "transportNetwork": {
+        "metroLines": 0,
+        "busRoutes": 40,
+        "trolleybusRoutes": 0,
+        "tramRoutes": 0
+      }
+    }
+  },
+  "economicIndicators": {
+    "gdp": {
+      "total": 68200000000,
+      "growth": 2.1,
+      "perCapita": 7340,
+      "byRegion": {
+        "Минск": 25.3,
+        "Минская область": 18.5,
+        "Гомельская область": 12.8,
+        "Брестская область": 11.2,
+        "Гродненская область": 9.8,
+        "Витебская область": 11.5,
+        "Могилевская область": 10.9
+      }
+    },
+    "employment": {
+      "totalLabor": 4450000,
+      "unemploymentRate": 0.5,
+      "averageSalary": 1320,
+      "bySector": {
+        "industry": 24.5,
+        "agriculture": 8.2,
+        "construction": 7.8,
+        "transport": 8.5,
+        "trade": 15.3,
+        "education": 11.2,
+        "healthcare": 8.7,
+        "other": 15.8
+      }
+    },
+    "trade": {
+      "exports": 42500000000,
+      "imports": 39800000000,
+      "balance": 2700000000,
+      "mainPartners": ["Россия", "Украина", "Польша", "Германия", "Литва"]
+    }
+  },
+  "demographics": {
+    "totalPopulation": 9255000,
+    "urbanPopulation": 78.6,
+    "ruralPopulation": 21.4,
+    "malePercentage": 46.8,
+    "femalePercentage": 53.2,
+    "medianAge": 40.9,
+    "birthRate": 9.2,
+    "deathRate": 12.8,
+    "lifeExpectancy": {
+      "total": 74.8,
+      "male": 69.5,
+      "female": 79.8
+    },
+    "ethnicComposition": {
+      "Белорусы": 83.7,
+      "Русские": 8.3,
+      "Поляки": 3.1,
+      "Украинцы": 1.7,
+      "Другие": 3.2
+    }
+  }
+}
