@@ -22,7 +22,7 @@ async function loadDistrictsData() {
         addDistrictMarkers();
         
     } catch (error) {
-        console.error('Ошибка загрузки районов:', error);
+        console.error('Ошибка загружки районов:', error);
     }
 }
 
@@ -33,9 +33,10 @@ function addDistrictBoundaries(geojson) {
             return {
                 fillColor: '#4a7c7e',
                 weight: 1.5,
-                opacity: 0.8,
+                opacity: 1,
                 color: '#7cf578',
                 fillOpacity: 0.25,
+                interactive: true,
                 className: 'district-polygon'
             };
         },
@@ -47,10 +48,20 @@ function addDistrictBoundaries(geojson) {
                 return;
             }
             
+            // Проверяем что есть данные для этого района
+            if (!districtsInfo[districtName]) {
+                console.warn(`Нет данных для района: ${districtName}`);
+                return;
+            }
+            
             layer.districtName = districtName;
+            
+            // Устанавливаем с cursor: pointer
+            layer.options.interactive = true;
             
             layer.on({
                 click: function(e) {
+                    console.log('Клик по району:', districtName);
                     selectDistrict(layer, districtName);
                     showDistrictInfo(districtName);
                     zoomToDistrict(layer);
@@ -59,14 +70,17 @@ function addDistrictBoundaries(geojson) {
                 mouseover: function() {
                     if (selectedDistrict !== layer) {
                         layer.setStyle({
-                            fillOpacity: 0.35
+                            fillOpacity: 0.35,
+                            weight: 2
                         });
+                        layer.bringToFront();
                     }
                 },
                 mouseout: function() {
                     if (selectedDistrict !== layer) {
                         layer.setStyle({
-                            fillOpacity: 0.25
+                            fillOpacity: 0.25,
+                            weight: 1.5
                         });
                     }
                 }
@@ -89,28 +103,62 @@ function addDistrictMarkers() {
         const district = districtsInfo[districtName];
         const coords = district.centerCoords;
         
-        const marker = L.circleMarker(coords, {
-            radius: 8,
+        if (!coords || coords.length < 2) {
+            console.warn(`Не установлены координаты для ${districtName}`);
+            continue;
+        }
+        
+        const marker = L.circleMarker([coords[1], coords[0]], {
+            radius: 7,
             fillColor: '#7cf578',
             color: '#37FF8B',
             weight: 2,
             opacity: 1,
-            fillOpacity: 0.8,
+            fillOpacity: 0.9,
             className: 'district-marker',
-            pane: 'markerPane'
+            pane: 'markerPane',
+            interactive: true
         }).addTo(map);
         
         marker.districtName = districtName;
         marker.districtData = district;
         
-        marker.on('click', function(e) {
-            selectDistrict(null, districtName);
-            showDistrictInfo(districtName);
-            L.DomEvent.stopPropagation(e);
+        marker.on({
+            click: function(e) {
+                console.log('Клик по маркеру:', districtName);
+                selectDistrict(null, districtName);
+                showDistrictInfo(districtName);
+                L.DomEvent.stopPropagation(e);
+            },
+            mouseover: function() {
+                marker.setStyle({
+                    radius: 9,
+                    weight: 3,
+                    fillOpacity: 1
+                });
+            },
+            mouseout: function() {
+                marker.setStyle({
+                    radius: 7,
+                    weight: 2,
+                    fillOpacity: 0.9
+                });
+            }
         });
         
         // Popup при клике на маркер
-        marker.bindPopup(() => createDistrictPopupContent(district));
+        marker.bindPopup(() => createDistrictPopupContent(district), {
+            maxWidth: 300,
+            className: 'district-popup-container'
+        });
+        
+        // Лабел с названием районного центра
+        marker.bindTooltip(district.center, {
+            permanent: false,
+            direction: 'top',
+            offset: [0, -15],
+            className: 'district-marker-label'
+        });
         
         districtMarkers.push(marker);
     }
@@ -185,7 +233,7 @@ function zoomToDistrict(layer) {
     map.fitBounds(bounds, {
         paddingTopLeft: [paddingLeft, paddingTop],
         paddingBottomRight: [paddingRight, paddingBottom],
-        maxZoom: 12,
+        maxZoom: 10,
         animate: true,
         duration: 0.6
     });
