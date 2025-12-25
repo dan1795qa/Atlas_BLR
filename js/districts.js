@@ -5,6 +5,39 @@ let selectedDistrict = null;
 let currentMapMode = 'regions'; // 'regions' или 'districts'
 let districtClickHandler;
 
+// Маппинг названий районов из GeoJSON (английские названия) на русские
+const districtNameMapping = {
+    'Zhlobin': 'Гомельский', // Шлобин -> Гомельский
+    'Vitebsk': 'Витебский',
+    'Grodno': 'Гродненский',
+    'Brest': 'Брестский',
+    'Minsk': 'Минский',
+    'Mogilev': 'Могилёвский',
+    'Polotsk': 'Полоцкий',
+    'Bobruysk': 'Бобруйский',
+    'Baranovich': 'Барановичский',
+    'Gomel': 'Гомельский',
+    'Mozyr': 'Мозырский',
+    'Rechytsa': 'Речицкий',
+    'Pinsk': 'Пинский',
+    'Kobrin': 'Кобринский',
+    'Lida': 'Лидский',
+    'Borisov': 'Борисовский',
+    'Myadelevskiy': 'Мядельский'
+};
+
+// Отключ маппинг для GeoJSON наименования районов -> русские названия
+function mapDistrictName(geojsonName) {
+    // Пытаемся найти английское название в маппинге
+    for (const [englishName, russianName] of Object.entries(districtNameMapping)) {
+        if (geojsonName && geojsonName.toLowerCase().includes(englishName.toLowerCase())) {
+            return russianName;
+        }
+    }
+    // Если помосичь не работают - ретурним оригинальное
+    return geojsonName;
+}
+
 // Загрузка и отображение районов
 async function loadDistrictsData() {
     try {
@@ -17,13 +50,14 @@ async function loadDistrictsData() {
         const geojson = await response.json();
         
         console.log('Районы загружены успешно');
-        console.log('Пример данных:', geojson.features[0].properties);
+        console.log('Всего районов:', geojson.features.length);
+        console.log('Понаименования:', geojson.features.map(f => f.properties.shapeName).slice(0, 5));
         
         addDistrictBoundaries(geojson);
         addDistrictMarkers();
         
     } catch (error) {
-        console.error('Ошибка загрузки районов:', error);
+        console.error('Ошибка загружки районов:', error);
     }
 }
 
@@ -42,25 +76,25 @@ function addDistrictBoundaries(geojson) {
             };
         },
         onEachFeature: function(feature, layer) {
-            // ИСПРАВЛЕНИЕ: используем shapeName из GeoJSON
-            const districtName = feature.properties.shapeName || feature.properties.name || feature.properties.district;
+            // Получаем имя района из GeoJSON
+            const geojsonName = feature.properties.shapeName;
+            // Отображаем к русскому
+            const districtName = mapDistrictName(geojsonName);
             
             if (!districtName) {
-                console.warn('Не найдено имя района в свойствах:', feature.properties);
+                console.warn('Не найдено имя района');
                 return;
             }
             
-            console.log('Обработка района из GeoJSON:', districtName);
+            console.log(`Геојсон: ${geojsonName} -> Русское: ${districtName}, Есть данные: ${!!districtsInfo[districtName]}`);
             
             // Проверяем есть ли данные для этого района в нашей БД
             if (!districtsInfo[districtName]) {
-                console.warn(`Нет данных для района: ${districtName}. Доступные районы:`, Object.keys(districtsInfo));
-                // Продолжаем без показа информации, чтобы полигон всё еще отображался
+                console.warn(`Нет данных для района: ${districtName} (англ. ${geojsonName}). Есть: ${Object.keys(districtsInfo).slice(0, 5)}}`);
+                // Отрисовываем всё равно
             }
             
             layer.districtName = districtName;
-            
-            // Устанавливаем cursor: pointer
             layer.options.interactive = true;
             
             layer.on({
@@ -199,7 +233,7 @@ function selectDistrict(layer, districtName) {
     resetAllDistricts();
     
     if (layer) {
-        // Выделяем новый район - так же как это делают для областей
+        // Выделяем новый район
         layer.setStyle({
             fillColor: '#7cf578',      // светло-зеленый
             weight: 3,                 // толстая граница
@@ -212,7 +246,7 @@ function selectDistrict(layer, districtName) {
     }
 }
 
-// Выделение района по маркеру (для визуалисации)
+// Выделение района по маркеру
 function selectDistrictByMarker(districtName) {
     resetAllDistricts();
     
