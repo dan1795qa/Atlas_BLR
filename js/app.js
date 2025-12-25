@@ -5,6 +5,7 @@ let minskMarker;
 let regionsGeoJSON;
 let cityMarkers = [];
 let selectedRegion = null;
+let regionClickHandler;
 
 // Маппинг capital -> название области для regionsInfo
 const capitalToRegion = {
@@ -68,12 +69,13 @@ function initMap() {
     // Обновляем видимость маркеров при зуме
     map.on('zoomend', updateMarkersVisibility);
     
-    // Сброс выделения при клике на карту
-    map.on('click', function() {
+    // Сброс выделения при клике на карту (для режима областей)
+    regionClickHandler = function() {
         resetAllRegions();
         document.getElementById('info-panel').classList.add('hidden');
         map.setView(mapConfig.center, 7);
-    });
+    };
+    map.on('click', regionClickHandler);
 }
 
 // Загрузка данных регионов из GeoJSON файла
