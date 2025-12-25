@@ -3,6 +3,7 @@ let districtsLayer;
 let districtMarkers = [];
 let selectedDistrict = null;
 let currentMapMode = 'regions'; // 'regions' или 'districts'
+let districtClickHandler;
 
 // Загрузка и отображение районов
 async function loadDistrictsData() {
@@ -77,7 +78,7 @@ function addDistrictBoundaries(geojson) {
                 className: 'district-label'
             });
         }
-    });
+    }).addTo(map);
 }
 
 // Добавление маркеров районных центров
@@ -97,7 +98,7 @@ function addDistrictMarkers() {
             fillOpacity: 0.8,
             className: 'district-marker',
             pane: 'markerPane'
-        });
+        }).addTo(map);
         
         marker.districtName = districtName;
         marker.districtData = district;
@@ -265,40 +266,82 @@ function showDistrictInfo(districtName) {
     `;
     
     infoPanel.classList.remove('hidden');
+    regionInfo.scrollTop = 0;
 }
 
 // Переключение на режим районов
 function switchToDistricts() {
     if (currentMapMode === 'districts') return;
     
-    // Скрываем регионы
-    if (regionsLayer) regionsLayer.remove();
-    if (minskLayer) minskLayer.remove();
-    cityMarkers.forEach(marker => marker.remove());
-    if (minskMarker) minskMarker.remove();
+    console.log('Переключение на районы...');
     
-    // Показываем районы
+    // Скрываем регионы
+    if (regionsLayer) {
+        map.removeLayer(regionsLayer);
+    }
+    if (minskLayer) {
+        map.removeLayer(minskLayer);
+    }
+    
+    // Удаляем маркеры городов
+    cityMarkers.forEach(city => {
+        if (map.hasLayer(city.marker)) {
+            map.removeLayer(city.marker);
+        }
+    });
+    
+    if (minskMarker && map.hasLayer(minskMarker)) {
+        map.removeLayer(minskMarker);
+    }
+    
+    // Загружаем районы
     loadDistrictsData();
     currentMapMode = 'districts';
+    
+    // Обновляем обработчик клика на карту для районов
+    map.off('click', districtClickHandler);
+    districtClickHandler = function(e) {
+        resetAllDistricts();
+        document.getElementById('info-panel').classList.add('hidden');
+        map.setView(mapConfig.center, 7);
+    };
+    map.on('click', districtClickHandler);
     
     // Возвращаемся к начальному виду
     map.setView(mapConfig.center, 7);
     resetAllDistricts();
+    
+    console.log('Режим районов активирован');
 }
 
 // Переключение обратно на регионы
 function switchToRegions() {
     if (currentMapMode === 'regions') return;
     
-    // Скрываем районы
-    if (districtsLayer) districtsLayer.remove();
-    districtMarkers.forEach(marker => marker.remove());
+    console.log('Переключение на области...');
     
-    // Показываем регионы
+    // Скрываем районы
+    if (districtsLayer) {
+        map.removeLayer(districtsLayer);
+    }
+    
+    // Удаляем маркеры районов
+    districtMarkers.forEach(marker => {
+        if (map.hasLayer(marker)) {
+            map.removeLayer(marker);
+        }
+    });
+    
+    // Удаляем старый обработчик клика
+    map.off('click', districtClickHandler);
+    
+    // Загружаем регионы
     loadRegionsData();
     currentMapMode = 'regions';
     
     // Возвращаемся к начальному виду
     map.setView(mapConfig.center, 7);
     resetAllRegions();
+    
+    console.log('Режим областей активирован');
 }
