@@ -553,15 +553,24 @@ function updateMarkersVisibility() {
 
 // Создание содержимого popup с годом основания
 function createPopupContent(city) {
+    const foundedYear = city.founded || "Неизвестно";
+    const foundedDesc = city.foundedDescription || "";
+    
     return `
         <div class="city-popup">
             <h3>${city.name}</h3>
-            <p><strong>Год основания:</strong> ${city.founded}</p>
-            <p><strong>Население:</strong> ${city.population}</p>
-            <p><strong>Регион:</strong> ${city.region}</p>
+            <div class="popup-info">
+                <p class="popup-founded">
+                    <strong>📅 Год основания:</strong> ${foundedYear}${city.founded ? ' г.' : ''}
+                </p>
+                ${foundedDesc ? `<p class="popup-founded-desc">${foundedDesc}</p>` : ''}
+                <p><strong>👥 Население:</strong> ${city.population}</p>
+                <p><strong>📍 Регион:</strong> ${city.region}</p>
+            </div>
         </div>
     `;
 }
+
 
 // Запуск приложения
 document.addEventListener('DOMContentLoaded', () => {

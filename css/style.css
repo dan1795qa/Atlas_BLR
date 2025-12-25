@@ -74,20 +74,21 @@ header p {
 
 /* Leaflet Popup */
 .leaflet-popup-content-wrapper {
-    background: rgba(54, 54, 54, 0.95);
+    background: rgba(26, 26, 26, 0.98);
     border: 2px solid #37FF8B;
-    border-radius: 8px;
-    box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(55, 255, 139, 0.3);
     padding: 0;
 }
 
 .leaflet-popup-content {
     margin: 0;
     padding: 0;
+    min-width: 220px;
 }
 
 .leaflet-popup-tip {
-    background: rgba(54, 54, 54, 0.95);
+    background: rgba(26, 26, 26, 0.98);
     border: 2px solid #37FF8B;
     border-top: none;
     border-right: none;
@@ -97,6 +98,7 @@ header p {
     color: #7cf578 !important;
     font-size: 20px !important;
     padding: 4px 8px !important;
+    transition: color 0.2s ease;
 }
 
 .leaflet-popup-close-button:hover {
@@ -105,24 +107,60 @@ header p {
 
 /* City Popup Styles */
 .city-popup {
-    text-align: center;
-    padding: 12px 15px;
+    padding: 15px 18px;
     background: transparent;
     border: none;
     border-radius: 0;
 }
 
 .city-popup h3 {
-    margin: 0 0 8px 0;
+    margin: 0 0 12px 0;
     color: #37FF8B;
-    font-size: 16px;
+    font-size: 18px;
+    font-weight: 600;
+    border-bottom: 2px solid #37FF8B;
+    padding-bottom: 6px;
+    text-align: center;
+}
+
+.popup-info {
+    text-align: left;
+}
+
+.popup-info p {
+    margin: 10px 0;
+    color: #e0e0e0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.popup-info p strong {
+    color: #7cf578;
     font-weight: 600;
 }
 
-.city-popup p {
-    margin: 4px 0;
-    color: #67db97;
-    font-size: 13px;
+/* Год основания */
+.popup-founded {
+    color: #7cf578 !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    margin-bottom: 6px !important;
+}
+
+.popup-founded strong {
+    color: #37FF8B !important;
+}
+
+/* Описание основания */
+.popup-founded-desc {
+    font-size: 13px !important;
+    color: #b0b0b0 !important;
+    font-style: italic;
+    margin-top: 4px !important;
+    margin-bottom: 12px !important;
+    padding-left: 12px;
+    border-left: 3px solid #37FF8B;
+    line-height: 1.5;
 }
 
 /* City Markers */
@@ -225,6 +263,22 @@ path.leaflet-interactive:focus {
         height: calc(100vh - 60px - 54px);
     }
     
+    .city-popup h3 {
+        font-size: 20px;
+    }
+    
+    .popup-info p {
+        font-size: 15px;
+    }
+    
+    .popup-founded {
+        font-size: 16px !important;
+    }
+    
+    .popup-founded-desc {
+        font-size: 14px !important;
+    }
+    
     .capital-label {
         font-size: 14px !important;
         padding: 4px 9px !important;
@@ -257,6 +311,14 @@ path.leaflet-interactive:focus {
     .container {
         height: calc(100vh - 53px - 50px);
     }
+    
+    .city-popup h3 {
+        font-size: 18px;
+    }
+    
+    .popup-info p {
+        font-size: 14px;
+    }
 }
 
 /* Адаптивность для средних экранов (992px - 1199px) */
@@ -275,6 +337,26 @@ path.leaflet-interactive:focus {
     
     .container {
         height: calc(100vh - 50px - 48px);
+    }
+    
+    .city-popup {
+        padding: 13px 15px;
+    }
+    
+    .city-popup h3 {
+        font-size: 17px;
+    }
+    
+    .popup-info p {
+        font-size: 13px;
+    }
+    
+    .popup-founded {
+        font-size: 14px !important;
+    }
+    
+    .popup-founded-desc {
+        font-size: 12px !important;
     }
     
     .capital-label {
@@ -311,7 +393,23 @@ path.leaflet-interactive:focus {
     }
     
     .city-popup {
-        padding: 10px 12px;
+        padding: 12px 14px;
+    }
+    
+    .city-popup h3 {
+        font-size: 16px;
+    }
+    
+    .popup-info p {
+        font-size: 13px;
+    }
+    
+    .popup-founded {
+        font-size: 13px !important;
+    }
+    
+    .popup-founded-desc {
+        font-size: 11px !important;
     }
     
     .capital-label {
@@ -349,15 +447,23 @@ path.leaflet-interactive:focus {
     }
     
     .city-popup {
-        padding: 8px 10px;
+        padding: 10px 12px;
     }
     
     .city-popup h3 {
-        font-size: 14px;
+        font-size: 15px;
     }
     
-    .city-popup p {
+    .popup-info p {
         font-size: 12px;
+    }
+    
+    .popup-founded {
+        font-size: 13px !important;
+    }
+    
+    .popup-founded-desc {
+        font-size: 11px !important;
     }
     
     .capital-label {
@@ -396,17 +502,27 @@ path.leaflet-interactive:focus {
     }
     
     .city-popup {
-        padding: 6px 8px;
+        padding: 8px 10px;
     }
     
     .city-popup h3 {
-        font-size: 13px;
-        margin: 0 0 5px 0;
+        font-size: 14px;
+        margin: 0 0 8px 0;
+        padding-bottom: 5px;
     }
     
-    .city-popup p {
+    .popup-info p {
         font-size: 11px;
-        margin: 2px 0;
+        margin: 6px 0;
+    }
+    
+    .popup-founded {
+        font-size: 12px !important;
+    }
+    
+    .popup-founded-desc {
+        font-size: 10px !important;
+        padding-left: 8px;
     }
     
     .capital-label {
@@ -442,6 +558,26 @@ path.leaflet-interactive:focus {
     .container {
         height: calc(100vh - 39px - 40px);
     }
+    
+    .leaflet-popup-content {
+        min-width: 180px;
+    }
+    
+    .city-popup {
+        padding: 6px 8px;
+    }
+    
+    .city-popup h3 {
+        font-size: 13px;
+    }
+    
+    .popup-info p {
+        font-size: 10px;
+    }
+    
+    .popup-founded-desc {
+        font-size: 9px !important;
+    }
 }
 
 /* Ориентация landscape для мобильных устройств */
@@ -461,6 +597,18 @@ path.leaflet-interactive:focus {
     
     .container {
         height: calc(100vh - 37px - 40px);
+    }
+    
+    .city-popup {
+        padding: 8px 10px;
+    }
+    
+    .city-popup h3 {
+        font-size: 13px;
+    }
+    
+    .popup-info p {
+        font-size: 11px;
     }
     
     .capital-label {
