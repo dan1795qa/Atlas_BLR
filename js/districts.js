@@ -17,12 +17,13 @@ async function loadDistrictsData() {
         const geojson = await response.json();
         
         console.log('Районы загружены успешно');
+        console.log('Пример данных:', geojson.features[0].properties);
         
         addDistrictBoundaries(geojson);
         addDistrictMarkers();
         
     } catch (error) {
-        console.error('Ошибка загружки районов:', error);
+        console.error('Ошибка загрузки районов:', error);
     }
 }
 
@@ -41,17 +42,20 @@ function addDistrictBoundaries(geojson) {
             };
         },
         onEachFeature: function(feature, layer) {
-            const districtName = feature.properties.name || feature.properties.district;
+            // ИСПРАВЛЕНИЕ: используем shapeName из GeoJSON
+            const districtName = feature.properties.shapeName || feature.properties.name || feature.properties.district;
             
             if (!districtName) {
-                console.warn('Не найдено имя района');
+                console.warn('Не найдено имя района в свойствах:', feature.properties);
                 return;
             }
             
-            // Проверяем что есть данные для этого района
+            console.log('Обработка района из GeoJSON:', districtName);
+            
+            // Проверяем есть ли данные для этого района в нашей БД
             if (!districtsInfo[districtName]) {
-                console.warn(`Нет данных для района: ${districtName}`);
-                return;
+                console.warn(`Нет данных для района: ${districtName}. Доступные районы:`, Object.keys(districtsInfo));
+                // Продолжаем без показа информации, чтобы полигон всё еще отображался
             }
             
             layer.districtName = districtName;
@@ -63,7 +67,9 @@ function addDistrictBoundaries(geojson) {
                 click: function(e) {
                     console.log('Клик по району:', districtName);
                     selectDistrict(layer, districtName);
-                    showDistrictInfo(districtName);
+                    if (districtsInfo[districtName]) {
+                        showDistrictInfo(districtName);
+                    }
                     zoomToDistrict(layer);
                     L.DomEvent.stopPropagation(e);
                 },
