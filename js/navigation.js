@@ -1,6 +1,6 @@
 // Обработчики для навигационных кнопок
 document.addEventListener('DOMContentLoaded', () => {
-    const navButtons = document.querySelectorAll('.nav-btn:not(.disabled)');
+    const navButtons = document.querySelectorAll('.nav-btn');
     const dropdownItems = document.querySelectorAll('.dropdown-item');
     
     // Обработка кликов по основным кнопкам
@@ -8,18 +8,17 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', function() {
             if (!this.classList.contains('disabled')) {
                 const mapType = this.getAttribute('data-map');
-                console.log('Переключение на карту:', mapType);
                 
                 // Убираем активное состояние со всех кнопок
-                document.querySelectorAll('.nav-btn').forEach(btn => {
+                navButtons.forEach(btn => {
                     btn.classList.remove('active');
                 });
                 
                 // Добавляем активное состояние к текущей кнопке
                 this.classList.add('active');
                 
-                // Здесь будет логика переключения карт
-                // switchMap(mapType);
+                // Переключаем карты
+                switchMap(mapType);
             }
         });
     });
@@ -36,9 +35,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Функция переключения карт (будет реализована позже)
+    // Функция переключения карт
     function switchMap(mapType) {
-        console.log('Загрузка карты:', mapType);
-        // TODO: Реализовать переключение между разными типами карт
+        console.log('Переключение на карту:', mapType);
+        
+        // Закрываем панель информации
+        const infoPanel = document.getElementById('info-panel');
+        if (infoPanel) {
+            infoPanel.classList.add('hidden');
+        }
+        
+        switch(mapType) {
+            case 'regions':
+                switchToRegions();
+                break;
+            case 'districts':
+                switchToDistricts();
+                break;
+            case 'hydrography':
+                console.log('Гидрография (в разработке)');
+                break;
+            case 'roads':
+            case 'railways':
+            case 'highways':
+                console.log('дороги (в разработке)');
+                break;
+            default:
+                console.log('Неизвестный тип карты');
+        }
     }
 });
