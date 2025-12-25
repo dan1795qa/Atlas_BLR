@@ -56,7 +56,7 @@ function addDistrictBoundaries(geojson) {
             
             layer.districtName = districtName;
             
-            // Устанавливаем с cursor: pointer
+            // Устанавливаем cursor: pointer
             layer.options.interactive = true;
             
             layer.on({
@@ -71,7 +71,8 @@ function addDistrictBoundaries(geojson) {
                     if (selectedDistrict !== layer) {
                         layer.setStyle({
                             fillOpacity: 0.35,
-                            weight: 2
+                            weight: 2,
+                            cursor: 'pointer'
                         });
                         layer.bringToFront();
                     }
@@ -80,7 +81,8 @@ function addDistrictBoundaries(geojson) {
                     if (selectedDistrict !== layer) {
                         layer.setStyle({
                             fillOpacity: 0.25,
-                            weight: 1.5
+                            weight: 1.5,
+                            cursor: 'default'
                         });
                     }
                 }
@@ -126,7 +128,7 @@ function addDistrictMarkers() {
         marker.on({
             click: function(e) {
                 console.log('Клик по маркеру:', districtName);
-                selectDistrict(null, districtName);
+                selectDistrictByMarker(districtName);
                 showDistrictInfo(districtName);
                 L.DomEvent.stopPropagation(e);
             },
@@ -185,22 +187,43 @@ function createDistrictPopupContent(district) {
     `;
 }
 
-// Выделение района
+// Выделение района по территории
 function selectDistrict(layer, districtName) {
     // Сбрасываем предыдущее выделение
     resetAllDistricts();
     
     if (layer) {
-        // Выделяем новый район
+        // Выделяем новый район - так же как это делают для областей
         layer.setStyle({
-            fillColor: '#7cf578',
-            weight: 3,
-            fillOpacity: 0.5,
-            color: '#7cf578'
+            fillColor: '#7cf578',      // светло-зеленый
+            weight: 3,                 // толстая граница
+            fillOpacity: 0.5,          // высокая прозрачность
+            color: '#7cf578'           // цвет границ
         });
         
         layer.bringToFront();
         selectedDistrict = layer;
+    }
+}
+
+// Выделение района по маркеру (для визуалисации)
+function selectDistrictByMarker(districtName) {
+    resetAllDistricts();
+    
+    // Найдем и выделим корреспондирующие границы
+    if (districtsLayer) {
+        districtsLayer.eachLayer(function(layer) {
+            if (layer.districtName === districtName) {
+                layer.setStyle({
+                    fillColor: '#7cf578',
+                    weight: 3,
+                    fillOpacity: 0.5,
+                    color: '#7cf578'
+                });
+                layer.bringToFront();
+                selectedDistrict = layer;
+            }
+        });
     }
 }
 
