@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', function() {
             if (!this.classList.contains('disabled')) {
                 const mapType = this.getAttribute('data-map');
+                console.log('Навигация:', mapType);
                 
                 // Убираем активное состояние со всех кнопок
                 navButtons.forEach(btn => {
@@ -45,11 +46,14 @@ document.addEventListener('DOMContentLoaded', () => {
             infoPanel.classList.add('hidden');
         }
         
+        // Определяем направление переключения
         switch(mapType) {
             case 'regions':
+                console.log('Активируем режим областей');
                 switchToRegions();
                 break;
             case 'districts':
+                console.log('Активируем режим районов');
                 switchToDistricts();
                 break;
             case 'hydrography':
