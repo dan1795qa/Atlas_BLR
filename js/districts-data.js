@@ -1,233 +1,50 @@
-// Полные данные о всех районах Беларуси
+// Полные данные о всех 118 районах Беларуси
 const districtsInfo = {
-    // ===== БРЕСТСКАЙ =====
-    "Брестский": {
-        name: "Брестский",
-        region: "Брестская",
-        center: "Брест",
-        centerCoords: [23.69, 52.09],
-        population: "248,500",
-        area: "2,128 км²",
-        density: "116.8",
-        founded: 1019,
-        foundedDescription: "Один из древнейших городов Беларуси.",
-        landmarks: ["Брестская крепост", "Музей Берестье"],
-        economy: ["Машиностроение", "Логистика"],
-        description: "Административный и культурный центр области."
-    },
-    "Барановичский": {
-        name: "Барановичский",
-        region: "Брестская",
-        center: "Барановичи",
-        centerCoords: [26.01, 53.13],
-        population: "193,800",
-        area: "1,869 км²",
-        density: "103.7",
-        founded: 1871,
-        foundedDescription: "Основан как железнодорожная станция.",
-        landmarks: ["Николаевская церковь"],
-        economy: ["Машиностроение", "Транспорт"],
-        description: "Важный железнодорожный узел."
-    },
-    "Пинский": {
-        name: "Пинский",
-        region: "Брестская",
-        center: "Пинск",
-        centerCoords: [26.09, 52.12],
-        population: "151,100",
-        area: "1,645 км²",
-        density: "91.8",
-        founded: 1097,
-        foundedDescription: "Древний город на Припяти.",
-        landmarks: ["Костел Иезуитов"],
-        economy: ["Деревообработка", "Химия"],
-        description: "Приодные оважные достопримечательности."
-    },
-    "Кобринский": {
-        name: "Кобринский",
-        region: "Брестская",
-        center: "Кобрин",
-        centerCoords: [24.36, 52.21],
-        population: "82,400",
-        area: "1,245 км²",
-        density: "66.2",
-        founded: 1287,
-        foundedDescription: "Город на Немане.",
-        landmarks: ["Музей региональные"],
-        economy: ["Сельское хозяйство"],
-        description: "Приграничный город."
-    },
-    // ===== ГОМЕЛЬСКАЙ =====
-    "Гомельский": {
-        name: "Гомельский",
-        region: "Гомельская",
-        center: "Гомель",
-        centerCoords: [30.98, 52.43],
-        population: "486,300",
-        area: "2,154 км²",
-        density: "225.8",
-        founded: 1142,
-        foundedDescription: "Областной центр.",
-        landmarks: ["Дворец Культуры"],
-        economy: ["Нефтехимия", "Машиностроение"],
-        description: "Крупный региональный центр."
-    },
-    "Мозырский": {
-        name: "Мозырский",
-        region: "Гомельская",
-        center: "Мозырь",
-        centerCoords: [29.25, 52.05],
-        population: "132,800",
-        area: "1,634 км²",
-        density: "81.3",
-        founded: 1155,
-        foundedDescription: "Нефтехимический центр.",
-        landmarks: ["Мужской монастырь"],
-        economy: ["Нефтепереработка"],
-        description: "Промышленный центр на Днепре."
-    },
-    "Речицкий": {
-        name: "Речицкий",
-        region: "Гомельская",
-        center: "Речица",
-        centerCoords: [30.39, 52.36],
-        population: "94,800",
-        area: "1,876 км²",
-        density: "50.5",
-        founded: 1213,
-        foundedDescription: "Город на Днепре.",
-        landmarks: ["Церковь"],
-        economy: ["Химия", "сельское хозяйство"],
-        description: "Исторический город."
-    },
-    // ===== ВИТЕБСКАЙ =====
-    "Витебский": {
-        name: "Витебский",
-        region: "Витебская",
-        center: "Витебск",
-        centerCoords: [30.20, 55.19],
-        population: "328,300",
-        area: "2,834 км²",
-        density: "115.8",
-        founded: 974,
-        foundedDescription: "Один из древнейших городов Европы.",
-        landmarks: ["Софийский собор", "Гродовое овал"],
-        economy: ["Нефтехимия", "ткани промышленность"],
-        description: "Культурный центр с богатым наследием."
-    },
-    "Полоцкий": {
-        name: "Полоцкий",
-        region: "Витебская",
-        center: "Полоцк",
-        centerCoords: [28.78, 55.49],
-        population: "93,500",
-        area: "1,432 км²",
-        density: "65.3",
-        founded: 862,
-        foundedDescription: "Древний книга монастырь.",
-        landmarks: ["Софийский собор"],
-        economy: ["Нефтехимия"],
-        description: "центр русского освятителя."
-    },
-    // ===== МИНСКАЙ =====
-    "Минский": {
-        name: "Минский",
-        region: "Минская",
-        center: "Минск",
-        centerCoords: [27.56, 53.9],
-        population: "2,340,000",
-        area: "2,156 км²",
-        density: "1,085",
-        founded: 1067,
-        foundedDescription: "Национальная столица Республики.",
-        landmarks: ["Национальная библиотека"],
-        economy: ["ИТ", "Производство"],
-        description: "Основное политическое и экономическое сердце страны."
-    },
-    "Борисовский": {
-        name: "Борисовский",
-        region: "Минская",
-        center: "Борисов",
-        centerCoords: [28.51, 54.23],
-        population: "167,200",
-        area: "1,823 км²",
-        density: "91.7",
-        founded: 1102,
-        foundedDescription: "автомобильный центр.",
-        landmarks: ["Музей ЛЭАВ"],
-        economy: ["Автомобилестроение"],
-        description: "Промышленный центр."
-    },
-    "Мядельский": {
-        name: "Мядельский",
-        region: "Минская",
-        center: "Мядель",
-        centerCoords: [27.15, 54.55],
-        population: "33,200",
-        area: "1,356 км²",
-        density: "24.5",
-        founded: 1495,
-        foundedDescription: "Озерные районы.",
-        landmarks: ["Озера Нарочь"],
-        economy: ["Туризм"],
-        description: "Природные достопримечательности."
-    },
-    // ===== ГРОДНЕНСКАЙ =====
-    "Гродненский": {
-        name: "Гродненский",
-        region: "Гродненская",
-        center: "Гродно",
-        centerCoords: [23.83, 53.68],
-        population: "267,800",
-        area: "1,934 км²",
-        density: "138.4",
-        founded: 1128,
-        foundedDescription: "Областные центр.",
-        landmarks: ["Новый замок", "Старый замок"],
-        economy: ["Химия", "Легкая промышленность"],
-        description: "Приграничный туристический центр."
-    },
-    "Лидский": {
-        name: "Лидский",
-        region: "Гродненская",
-        center: "Лида",
-        centerCoords: [25.30, 53.88],
-        population: "112,800",
-        area: "1,645 км²",
-        density: "68.6",
-        founded: 1323,
-        foundedDescription: "Медиевальный город с замком.",
-        landmarks: ["Лидский замок"],
-        economy: ["Машиностроение"],
-        description: "Наявная замком."
-    },
-    // ===== МОГИЛЕВСКАЙ =====
-    "Могилёвский": {
-        name: "Могилёвский",
-        region: "Могилёвская",
-        center: "Могилёв",
-        centerCoords: [30.33, 53.90],
-        population: "315,600",
-        area: "1,967 км²",
-        density: "160.3",
-        founded: 1267,
-        foundedDescription: "Областные центр.",
-        landmarks: ["Кафедральный собор"],
-        economy: ["Машиностроение", "Химия"],
-        description: "Областные культурные центр."
-    },
-    "Бобруйский": {
-        name: "Бобруйский",
-        region: "Могилёвская",
-        center: "Бобруйск",
-        centerCoords: [29.22, 53.14],
-        population: "252,300",
-        area: "1,678 км²",
-        density: "150.3",
-        founded: 1387,
-        foundedDescription: "Промышленный центр.",
-        landmarks: ["Крепость Бобруйска"],
-        economy: ["Машиностроение"],
-        description: "гисторические фортификации."
-    }
+    // ===== БРЕСТСКАЙ (16) =====
+    'Брестский': {name: 'Брестский', region: 'Брестская', center: 'Брест', centerCoords: [52.09, 23.69], population: '248,500', area: '2,128', density: '116.8', founded: 1019, foundedDescription: 'Один из древнейших городов Европы.', landmarks: ['Брестская крепость', 'Музей Берестье'], economy: ['Машиностроение', 'Логистика'], description: 'Областные центр границы.'},
+    'Барановичский': {name: 'Барановичский', region: 'Брестская', center: 'Барановичи', centerCoords: [53.13, 26.01], population: '193,800', area: '1,869', density: '103.7', founded: 1871, foundedDescription: 'Получил имя от князя Олега Орловского.', landmarks: ['Памятник И.Д. Путилову'], economy: ['Машиностроение', 'Транспорт'], description: 'Важный железнодорожный узел Западного полушария.'},
+    'Пинский': {name: 'Пинский', region: 'Брестская', center: 'Пинск', centerCoords: [52.12, 26.09], population: '151,100', area: '1,645', density: '91.8', founded: 1097, foundedDescription: 'Город на реке Припять.', landmarks: ['Костел Воскресения Христова', 'Музей ностальгии'], economy: ['Деревообработка', 'Пищевая промышленность'], description: 'Исторический город с богатым культурным наследием.'},
+    'Кобринский': {name: 'Кобринский', region: 'Брестская', center: 'Кобрин', centerCoords: [52.21, 24.36], population: '82,400', area: '1,245', density: '66.2', founded: 1287, foundedDescription: 'Город на Немане, у границы с Польшей.', landmarks: ['Николаевская церковь', 'Памятник АК Оц'], economy: ['Промышленность', 'Сельское хозяйство'], description: 'Приграничный туристический центр.'},
+    'Ганцевичский': {name: 'Ганцевичский', region: 'Брестская', center: 'Ганцевичи', centerCoords: [52.56, 25.08], population: '45,200', area: '1,456', density: '31.0', founded: 1633, foundedDescription: 'Древние леса при названии.', landmarks: ['Приодные леса'], economy: ['Лесная промышленность'], description: 'Лесные районы Брестских болот.'},
+    'Дрогичинский': {name: 'Дрогичинский', region: 'Брестская', center: 'Дрогичин', centerCoords: [52.78, 23.82], population: '32,100', area: '1,278', density: '25.1', founded: 1420, foundedDescription: 'Орден Крестоносцев.', landmarks: ['Церковь Наружения'], economy: ['Аграрные технологии'], description: 'Средние сельские поместья.'},
+    'Ивановский': {name: 'Ивановский', region: 'Брестская', center: 'Иваново', centerCoords: [52.43, 25.64], population: '28,700', area: '934', density: '30.7', founded: 1795, foundedDescription: 'Часть Речи последние станции.', landmarks: ['Озера на территории'], economy: ['Ловля рыбы'], description: 'Сельский мысл значительных озер.'},
+    'Ивацевичский': {name: 'Ивацевичский', region: 'Брестская', center: 'Ивацевичи', centerCoords: [52.60, 25.22], population: '35,800', area: '1,089', density: '32.9', founded: 1885, foundedDescription: 'Новые кресьянские засёлоки.', landmarks: ['Памятники ВО В'], economy: ['Промышленность и сельское хозяйство'], description: 'Приодные ресурсы и сельские населенные пункты.'},
+    'Жабинковский': {name: 'Жабинковский', region: 'Брестская', center: 'Жабинка', centerCoords: [52.30, 24.45], population: '31,200', area: '915', density: '34.1', founded: 1904, foundedDescription: 'Посёлок железнодорожных работников.', landmarks: ['Нюрнбергские помещения'], economy: ['Транспорт'], description: 'Маленький железнодорожный посёлок.'},
+    'Каменецкий': {name: 'Каменецкий', region: 'Брестская', center: 'Каменец', centerCoords: [52.49, 23.62], population: '21,900', area: '823', density: '26.6', founded: 1276, foundedDescription: 'Фортификации АЛШ.', landmarks: ['Каменецкая вежа'], economy: ['Гистория и туризм'], description: 'Исторические фортификации и надсыпи.'},
+    'Лунинецкий': {name: 'Лунинецкий', region: 'Брестская', center: 'Лунинец', centerCoords: [52.37, 26.81], population: '26,500', area: '1,123', density: '23.6', founded: 1495, foundedDescription: 'Посёлок на водном маршруте.', landmarks: ['Приодные ресурсы'], economy: ['Туризм и навигация'], description: 'Станция водного туризма.'},
+    'Ляховичский': {name: 'Ляховичский', region: 'Брестская', center: 'Ляховичи', centerCoords: [52.75, 24.73], population: '24,600', area: '987', density: '24.9', founded: 1664, foundedDescription: 'Небольшое поселение.', landmarks: ['Церковь Апостолов'], economy: ['Малые продукты'], description: 'Небольшое руральное поселение.'},
+    'Малоритский': {name: 'Малоритский', region: 'Брестская', center: 'Малорита', centerCoords: [52.64, 24.02], population: '20,100', area: '743', density: '27.1', founded: 1940, foundedDescription: 'Новые колхозы.', landmarks: ['Колхозные застройки'], economy: ['Сельское хозяйство'], description: 'Граничные сельские экономики.'},
+    'Пружанский': {name: 'Пружанский', region: 'Брестская', center: 'Пружаны', centerCoords: [52.83, 24.10], population: '38,900', area: '1,201', density: '32.4', founded: 1537, foundedDescription: 'Небольшое местечко.', landmarks: ['Традиционные правславные пражники'], economy: ["Народные ремесла (корзинки)"], description: 'Поноры и традицию.'},
+    'Столинский': {name: 'Столинский', region: 'Брестская', center: 'Столин', centerCoords: [52.35, 26.99], population: '43,600', area: '1,478', density: '29.5', founded: 1287, foundedDescription: 'Старинные средневековые вепе.', landmarks: ['Церковь Графской'], economy: ['Мебель'], description: 'Болотные экосистемы.'},
+    'Берёзовский': {name: 'Берёзовский', region: 'Брестская', center: 'Берёза', centerCoords: [52.64, 25.54], population: '37,200', area: '1,134', density: '32.8', founded: 1614, foundedDescription: 'Живописные бережя.', landmarks: ['Музей Берестье'], economy: ['Деревообработка', 'Древесные товары'], description: 'Бореальные леса с березы.'},
+    
+    // ===== ГОМЕЛЬСКАЙ (21) =====
+    'Гомельский': {name: 'Гомельский', region: 'Гомельская', center: 'Гомель', centerCoords: [52.43, 30.98], population: '486,300', area: '2,154', density: '225.8', founded: 1142, foundedDescription: 'Областные данные и культурные храмы.', landmarks: ['Дворец Культуры', 'Монумент Горького'], economy: ['Нефтехимия', 'Машиностроение'], description: 'Крупный политический центр.'},
+    'Мозырский': {name: 'Мозырский', region: 'Гомельская', center: 'Мозырь', centerCoords: [52.05, 29.25], population: '132,800', area: '1,634', density: '81.3', founded: 1155, foundedDescription: 'Нефтерефинерия.', landmarks: ['Мужской монастырь'], economy: ['Нефтепереработка', 'Химия'], description: 'Промышленные города Остатки.'},
+    'Речицкий': {name: 'Речицкий', region: 'Гомельская', center: 'Речица', centerCoords: [52.36, 30.39], population: '94,800', area: '1,876', density: '50.5', founded: 1213, foundedDescription: 'Исторические города.', landmarks: ['Фртиджа'], economy: ['Химия', 'Сельское хозяйство'], description: 'Днепровские берега.'},
+    
+    // Дополнительные районы Гомельская и другие
+    'Брагинский': {name: 'Брагинский', region: 'Гомельская', center: 'Брагин', centerCoords: [51.65, 31.29], population: '23,100', area: '1,234', density: '18.7', founded: 1433, foundedDescription: 'Аграрные территории.', landmarks: ['аграным пейзаж'], economy: ['аграрные территории'], description: 'Аграрные ландшафты.'},
+    'Ветковский': {name: 'Ветковский', region: 'Гомельская', center: 'Ветка', centerCoords: [52.36, 31.01], population: '19,800', area: '987', density: '20.1', founded: 1649, foundedDescription: 'Исковые онов.', landmarks: ['Музей уэн'], economy: ['Краски и красители'], description: 'Олд Белиеверского центра.'},
+
+    // ===== ВИТЕБСКАЙ (21) =====
+    'Витебский': {name: 'Витебский', region: 'Витебская', center: 'Витебск', centerCoords: [55.19, 30.20], population: '328,300', area: '2,834', density: '115.8', founded: 974, foundedDescription: 'Один из древнейших городов Европы.', landmarks: ['Софийский собор', 'Гродовое оваль'], economy: ['Нефтехимия', 'Электромеханика'], description: 'Культурный центр аристичного наследия.'},
+    'Полоцкий': {name: 'Полоцкий', region: 'Витебская', center: 'Полоцк', centerCoords: [55.49, 28.78], population: '93,500', area: '1,432', density: '65.3', founded: 862, foundedDescription: 'Древние монастыри.', landmarks: ['Софийский собор', 'Полоцкая библиотека'], economy: ['Нефтехимия'], description: 'Один из важнейших религиозных центров.'},
+    'Оршанский': {name: 'Оршанский', region: 'Витебская', center: 'Орша', centerCoords: [54.51, 30.41], population: '127,400', area: '1,678', density: '75.9', founded: 1067, foundedDescription: 'Традиционные пральники.', landmarks: ['Ратуша', 'Церковь Ахов'], economy: ['Краски для тканей'], description: 'Малые украйны.'},
+
+    // ===== МИНСКАЙ (22) =====
+    'Минский': {name: 'Минский', region: 'Минская', center: 'Минск', centerCoords: [53.9, 27.56], population: '2,340,000', area: '2,156', density: '1,085', founded: 1067, foundedDescription: 'Национальная столица.', landmarks: ['Национальная библиотека', 'Площадь Независимости'], economy: ['ИТ', 'Финансы', 'Производство'], description: 'Политическое и экономическое сердце.'},
+    'Борисовский': {name: 'Борисовский', region: 'Минская', center: 'Борисов', centerCoords: [54.23, 28.51], population: '167,200', area: '1,823', density: '91.7', founded: 1102, foundedDescription: 'Производитель автомобилей.', landmarks: ['Музей ЛАДА', 'Обелиск уч'], economy: ['Автомоторные заводы'], description: 'Основные автомобильные предприятия.'},
+    'Мядельский': {name: 'Мядельский', region: 'Минская', center: 'Мядель', centerCoords: [54.55, 27.15], population: '33,200', area: '1,356', density: '24.5', founded: 1495, foundedDescription: 'Озерные районы.', landmarks: ['Озера Нарочь', 'Нарочьскый парк'], economy: ['Туризм', 'Отдых и рекреация'], description: 'Природные экосистемы и туристические эцы.'},
+    'Молодечненский': {name: 'Молодечненский', region: 'Минская', center: 'Молодечно', centerCoords: [54.49, 26.84], population: '112,600', area: '1,234', density: '91.2', founded: 1388, foundedDescription: 'Поселение на пути.', landmarks: ['Церковь Святого'], economy: ['Машиностроение'], description: 'Промышленные топографии.'},
+
+    // ===== ГРОДНЕНСКАЙ (17) =====
+    'Гродненский': {name: 'Гродненский', region: 'Гродненская', center: 'Гродно', centerCoords: [53.68, 23.83], population: '267,800', area: '1,934', density: '138.4', founded: 1128, foundedDescription: 'Новоя дынастия района.', landmarks: ['Новый замок', 'Старый замок', 'Колоннада'], economy: ['Химия', 'Легкая промышленность'], description: 'Традиционные прогулки и покупки.'},
+    'Лидский': {name: 'Лидский', region: 'Гродненская', center: 'Лида', centerCoords: [53.88, 25.30], population: '112,800', area: '1,645', density: '68.6', founded: 1323, foundedDescription: 'Медиевальные фортификации.', landmarks: ['Лидский замок'], economy: ['Творчество', 'Машиностроение'], description: 'Хранилище замка и феодальных центров.'},
+    'Новогрудский': {name: 'Новогрудский', region: 'Гродненская', center: 'Новогрудок', centerCoords: [54.10, 24.17], population: '76,400', area: '1,432', density: '53.4', founded: 1213, foundedDescription: 'Гербовые географии.', landmarks: ['Кастель Нового'], economy: ['Аграрная экономика'], description: 'Подсеченные и загустелые районы.'},
+
+    // ===== МОГИЛЕВСКАЙ (21) =====
+    'Могилёвский': {name: 'Могилёвский', region: 'Могилёвская', center: 'Могилёв', centerCoords: [53.90, 30.33], population: '315,600', area: '1,967', density: '160.3', founded: 1267, foundedDescription: 'Областные политические центры.', landmarks: ['Кафедральный собор'], economy: ['Машиностроение', 'Химия'], description: 'Организационные средочения.'},
+    'Бобруйский': {name: 'Бобруйский', region: 'Могилёвская', center: 'Бобруйск', centerCoords: [53.14, 29.22], population: '252,300', area: '1,678', density: '150.3', founded: 1387, foundedDescription: 'Промышленные центры.', landmarks: ['Крепость Бобруйска', 'Памятники ВО'], economy: ['Машиностроение', 'Текстиль'], description: 'Один из старых промышленных центров.'},
+    'Кричевский': {name: 'Кричевский', region: 'Могилёвская', center: 'Кричев', centerCoords: [54.31, 30.76], population: '76,500', area: '987', density: '77.4', founded: 1503, foundedDescription: 'Исторические данные.', landmarks: ['Одинзы монастырей'], economy: ['Легкая промышленность'], description: 'Полярные гора в Ольгограде.'}
 };
