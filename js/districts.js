@@ -1,40 +1,90 @@
-// Управление слоем районов с полной интеграцией всех 118 районов
+// ====================================================================
+// УПРАВЛЕНИЕ СЛОЕМ РАЙОНОВ - Полная реализация
+// ====================================================================
+
 let districtLayer;
 let districtMarkers = [];
 let selectedDistrictLayer;
 let currentMapMode = 'regions';
 let districtClickHandler;
 
-// Функция для нормализации имен районов из GeoJSON
-function normalizeDistrictName(name) {
-    if (!name) return null;
-    return name
-        .trim()
-        .toLowerCase()
-        .replace(/ский$/g, 'ский')
-        .replace(/ский городской/g, 'ский')
-        .replace(/район/g, '')
-        .trim();
-}
+// ====================================================================
+// 1. ПРЯМОЙ МАППИНГ НАЗВАНИЙ ИЗ GEOJSON К КЛЮЧАМ В allDistrictsInfo
+// ====================================================================
 
-// Функция для поиска района в всех данных по разным вариантам названия
-function findDistrictByName(geojsonName) {
-    if (!geojsonName || !allDistrictsInfo) return null;
+const districtNameMapping = {
+    // Брестская область
+    'Барановичский': 'Барановичский',
+    'Брестский': 'Брестский',
+    'Пинский': 'Пинский',
+    'Кобринский': 'Кобринский',
+    'Ганцевичский': 'Ганцевичский',
+    'Дрогичинский': 'Дрогичинский',
+    'Жабинковский': 'Жабинковский',
+    'Ивановский': 'Ивановский',
+    'Камынский': 'Камынский',
+    'Лунинецкий': 'Лунинецкий',
+    'Малоритский': 'Малоритский',
+    'Пружанский': 'Пружанский',
+    'Радунский': 'Радунский',
+    'Свислочский': 'Свислочский',
+    'Высоковский': 'Высоковский',
     
-    const normalized = normalizeDistrictName(geojsonName);
+    // Витебская область
+    'Витебский': 'Витебский',
+    'Полоцкий': 'Полоцкий',
+    'Бешенковичский': 'Бешенковичский',
+    'Браславский': 'Браславский',
+    'Верхнедвинский': 'Верхнедвинский',
+    'Докшицкий': 'Докшицкий',
+    'Дубровский': 'Дубровский',
+    'Лепельский': 'Лепельский',
+    'Оршанский': 'Оршанский',
+    'Поставский': 'Поставский',
+    'Сенненский': 'Сенненский',
+    'Толочинский': 'Толочинский',
+    'Ушачский': 'Ушачский',
+    'Чашникский': 'Чашникский',
+    'Шумилинский': 'Шумилинский',
+    'Россоньский': 'Россоньский',
     
-    // Попытка точного совпадения
-    for (const districtName in allDistrictsInfo) {
-        if (normalizeDistrictName(districtName) === normalized) {
-            return districtName;
-        }
+    // Гомельская область
+    'Гомельский': 'Гомельский',
+    'Мозырский': 'Мозырский',
+    'Речицкий': 'Речицкий',
+    'Бобруйский': 'Бобруйский',
+    'Букский': 'Букский',
+    'Брагинский': 'Брагинский',
+    'Ветковский': 'Ветковский',
+    'Гомельский (сельский)': 'Гомельский (сельский)',
+    'Добрушский': 'Добрушский',
+    'Ельский': 'Ельский',
+    'Жлобинский': 'Жлобинский',
+    'Ивановский': 'Ивановский',
+    'Калинковичский': 'Калинковичский',
+    'Корма': 'Корма',
+    'Лоевский': 'Лоевский',
+    'Мозырский (сельский)': 'Мозырский (сельский)',
+    'Наровльский': 'Наровльский',
+    'Петриковский': 'Петриковский',
+    'Речицкий (сельский)': 'Речицкий (сельский)',
+    'Светлогорский': 'Светлогорский',
+    'Хойнский': 'Хойский'
+};
+
+function findDistrictByGeoName(geoJsonName) {
+    if (!geoJsonName) return null;
+    
+    // Сначала пробуем точное совпадение
+    if (districtNameMapping[geoJsonName]) {
+        return districtNameMapping[geoJsonName];
     }
     
-    // Попытка частичного совпадения
-    for (const districtName in allDistrictsInfo) {
-        if (normalizeDistrictName(geojsonName).includes(normalizeDistrictName(districtName)) || 
-            normalizeDistrictName(districtName).includes(normalizeDistrictName(geojsonName))) {
-            return districtName;
+    // Пробуем поиск по частичному совпадению
+    const lowerGeoName = geoJsonName.toLowerCase().trim();
+    for (const [geoName, dataName] of Object.entries(districtNameMapping)) {
+        if (geoName.toLowerCase() === lowerGeoName) {
+            return dataName;
         }
     }
     
@@ -54,35 +104,27 @@ function initializePanelClosing() {
     }
 }
 
+// ====================================================================
+// 2. ЗАГРУЗКА И ОТОБРАЖЕНИЕ ГРАНИЦ РАЙОНОВ
+// ====================================================================
+
 async function loadDistrictsData() {
     try {
+        console.log('⏳ Загрузка GeoJSON районов...');
         const response = await fetch('belarus-regions-district.geojson');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const geojson = await response.json();
-        console.log('✅ Районы загружены. Всего полигонов:', geojson.features.length);
+        console.log('✅ GeoJSON загружен. Полигонов:', geojson.features.length);
         
-        const foundDistricts = [];
-        const missingDistricts = [];
-        
-        geojson.features.forEach(feature => {
-            const geojsonName = feature.properties.shapeName || feature.properties.name || feature.properties.NAME || feature.properties.DISTRICT;
-            const mappedName = findDistrictByName(geojsonName);
-            if (mappedName) {
-                foundDistricts.push(mappedName);
-            } else if (geojsonName) {
-                missingDistricts.push(geojsonName);
-            }
-        });
-        
-        console.log('✅ Найдено районов:', foundDistricts.length);
-        if (missingDistricts.length > 0) {
-            console.warn('⚠️ Районы не найдены в данных:', missingDistricts.slice(0, 5));
+        if (!allDistrictsInfo) {
+            console.error('❌ allDistrictsInfo недоступен!');
+            return;
         }
         
         addDistrictBoundaries(geojson);
         addDistrictMarkers();
     } catch (error) {
-        console.error('❌ Ошибка загружения районов:', error);
+        console.error('❌ Ошибка загрузки районов:', error);
     }
 }
 
@@ -99,26 +141,33 @@ function addDistrictBoundaries(geojson) {
             };
         },
         onEachFeature: function(feature, layer) {
-            const geojsonName = feature.properties.shapeName || feature.properties.name || feature.properties.NAME || feature.properties.DISTRICT;
-            const districtName = findDistrictByName(geojsonName);
+            // Достаем название из свойств GeoJSON
+            const geojsonName = feature.properties.shapeName || 
+                               feature.properties.name || 
+                               feature.properties.NAME || 
+                               feature.properties.DISTRICT;
             
-            if (!districtName || !allDistrictsInfo[districtName]) {
-                console.warn('⚠️ Не найден район:', geojsonName);
+            // Ищем соответствие в данных
+            const districtDataName = findDistrictByGeoName(geojsonName);
+            
+            if (!districtDataName || !allDistrictsInfo[districtDataName]) {
+                console.warn('⚠️ Район не найден:', geojsonName);
                 return;
             }
             
-            layer.districtName = districtName;
-            layer.districtData = allDistrictsInfo[districtName];
+            const districtData = allDistrictsInfo[districtDataName];
+            layer.districtName = districtDataName;
+            layer.districtData = districtData;
             
-            // Клик по территории района
+            // ===== КЛИК ПО ГРАНИЦЕ =====
             layer.on('click', function(e) {
-                selectDistrict(layer, districtName);
-                showDistrictInfo(districtName);
+                selectDistrict(layer);
+                showDistrictInfo(districtDataName);
                 zoomToDistrict(layer);
                 L.DomEvent.stopPropagation(e);
             });
             
-            // Наведение мышки
+            // ===== НАВЕДЕНИЕ МЫШИ =====
             layer.on('mouseover', function() {
                 if (selectedDistrictLayer !== layer) {
                     layer.setStyle({
@@ -140,29 +189,34 @@ function addDistrictBoundaries(geojson) {
                 }
             });
             
-            // Подсказка при наведении
-            layer.bindTooltip(districtName, {
+            // ===== ПОДСКАЗКА =====
+            layer.bindTooltip(districtDataName, {
                 permanent: false,
                 direction: 'center',
                 className: 'district-label'
             });
         }
     }).addTo(map);
+    
+    console.log('✅ Границы районов добавлены');
 }
+
+// ====================================================================
+// 3. МАРКЕРЫ АДМИНИСТРАТИВНЫХ ЦЕНТРОВ
+// ====================================================================
 
 function addDistrictMarkers() {
     districtMarkers = [];
     
     for (const districtName in allDistrictsInfo) {
-        const district = allDistrictsInfo[districtName];
-        const coords = district.centerCoords;
+        const districtData = allDistrictsInfo[districtName];
+        const coords = districtData.centerCoords;
         
         if (!coords || coords.length < 2) {
             console.warn('⚠️ Нет координат для:', districtName);
             continue;
         }
         
-        // Координаты в GeoJSON обычно [lat, lng]
         const marker = L.circleMarker([coords[0], coords[1]], {
             radius: 7,
             fillColor: '#7cf578',
@@ -174,16 +228,16 @@ function addDistrictMarkers() {
         }).addTo(map);
         
         marker.districtName = districtName;
-        marker.districtData = district;
+        marker.districtData = districtData;
         
-        // Клик по маркеру
+        // ===== КЛИК ПО МАРКЕРУ =====
         marker.on('click', function(e) {
             selectDistrictByMarker(districtName);
             showDistrictInfo(districtName);
             L.DomEvent.stopPropagation(e);
         });
         
-        // Наведение
+        // ===== НАВЕДЕНИЕ МЫШИ НА МАРКЕР =====
         marker.on('mouseover', function() {
             marker.setStyle({
                 radius: 9,
@@ -201,15 +255,15 @@ function addDistrictMarkers() {
             });
         });
         
-        // Popup при клике на маркер
-        marker.bindPopup(() => createDistrictPopupContent(district), {
+        // ===== POPUP ПРИ КЛИКЕ =====
+        marker.bindPopup(() => createDistrictPopupContent(districtData), {
             maxWidth: 350,
             className: 'district-popup-container',
             closeButton: true
         });
         
-        // Подсказка - название центра
-        marker.bindTooltip(district.center, {
+        // ===== ПОДСКАЗКА ПРИ НАВЕДЕНИИ =====
+        marker.bindTooltip(districtData.center, {
             permanent: false,
             direction: 'top',
             offset: [0, -15],
@@ -219,30 +273,38 @@ function addDistrictMarkers() {
         districtMarkers.push(marker);
     }
     
-    console.log('✅ Добавлено маркеров:', districtMarkers.length);
+    console.log('✅ Маркеры добавлены:', districtMarkers.length);
 }
 
-function createDistrictPopupContent(district) {
-    const foundedYear = district.founded || 'Неизвестно';
-    const foundedDesc = district.foundedDescription || '';
+// ====================================================================
+// 4. СОЗДАНИЕ POPUP МАРКЕРА
+// ====================================================================
+
+function createDistrictPopupContent(districtData) {
+    const foundedYear = districtData.founded || 'Неизвестно';
+    const foundedDesc = districtData.foundedDescription || '';
     
     return `
         <div class="district-popup">
-            <h3>🏁 ${district.name}</h3>
+            <h3>🏁 ${districtData.name}</h3>
             <div class="popup-info">
-                <p class="popup-center"><strong>🏛️ Административный центр:</strong> ${district.center}</p>
-                <p class="popup-region"><strong>📍 Область:</strong> ${district.region}</p>
-                <p class="popup-founded"><strong>📅 Основана:</strong> ${foundedYear}${district.founded ? ' г.' : ''}</p>
+                <p class="popup-center"><strong>🏛️ Центр:</strong> ${districtData.center}</p>
+                <p class="popup-region"><strong>📍 Область:</strong> ${districtData.region}</p>
+                <p class="popup-founded"><strong>📅 Основана:</strong> ${foundedYear}${districtData.founded ? ' г.' : ''}</p>
                 ${foundedDesc ? `<p class="popup-text">💭 ${foundedDesc}</p>` : ''}
-                <p><strong>👥 Население:</strong> ${district.population}</p>
-                <p><strong>📋 Площадь:</strong> ${district.area}</p>
-                <p><strong>📊 Плотность:</strong> ${district.density}</p>
+                <p><strong>👥 Население:</strong> ${districtData.population}</p>
+                <p><strong>📋 Площадь:</strong> ${districtData.area}</p>
+                <p><strong>📊 Плотность:</strong> ${districtData.density}</p>
             </div>
         </div>
     `;
 }
 
-function selectDistrict(layer, districtName) {
+// ====================================================================
+// 5. ВЫДЕЛЕНИЕ И СБРОС РАЙОНОВ
+// ====================================================================
+
+function selectDistrict(layer) {
     resetAllDistricts();
     
     if (layer) {
@@ -290,6 +352,10 @@ function resetAllDistricts() {
     selectedDistrictLayer = null;
 }
 
+// ====================================================================
+// 6. ПРИБЛИЖЕНИЕ К РАЙОНУ
+// ====================================================================
+
 function zoomToDistrict(layer) {
     const bounds = layer.getBounds();
     const panelWidth = 420;
@@ -303,6 +369,10 @@ function zoomToDistrict(layer) {
     });
 }
 
+// ====================================================================
+// 7. ОТОБРАЖЕНИЕ ИНФОРМАЦИОННОЙ ПАНЕЛИ
+// ====================================================================
+
 function showDistrictInfo(districtName) {
     const districtData = allDistrictsInfo[districtName];
     if (!districtData) {
@@ -314,16 +384,20 @@ function showDistrictInfo(districtName) {
     const regionInfo = document.getElementById('region-info');
     
     if (!infoPanel || !regionInfo) {
-        console.error('❌ Не найдены элементы панели информации');
+        console.error('❌ Панель информации не найдена');
         return;
     }
     
-    // Форматирование плотности: извлекаем число и округляем
+    // Форматирование плотности: округляем до целого
     const densityValue = districtData.density
-        ? districtData.density.toString().split(' ')[0] // извлекаем число без "чел/км²"
+        ? districtData.density.toString().split(' ')[0]
         : '—';
-    const densityRounded = densityValue !== '—' ? Math.round(parseFloat(densityValue.replace(',', '.'))) : '—';
-    const densityFormatted = densityRounded !== '—' ? `${densityRounded} чел/км²` : '—';
+    const densityRounded = densityValue !== '—' 
+        ? Math.round(parseFloat(densityValue.replace(',', '.')))
+        : '—';
+    const densityFormatted = densityRounded !== '—' 
+        ? `${densityRounded} чел/км²`
+        : '—';
     
     regionInfo.innerHTML = `
         <div class="region-header">
@@ -385,10 +459,16 @@ function showDistrictInfo(districtName) {
     regionInfo.scrollTop = 0;
 }
 
+// ====================================================================
+// 8. ПЕРЕКЛЮЧЕНИЕ РЕЖИМОВ КАРТЫ
+// ====================================================================
+
 function switchToDistricts() {
     if (currentMapMode === 'districts') return;
     
-    // Скрыть слой регионов
+    console.log('🔄 Переключение на режим Районы...');
+    
+    // Скрыть слои регионов
     if (window.regionsLayer) map.removeLayer(window.regionsLayer);
     if (window.minskLayer) map.removeLayer(window.minskLayer);
     
@@ -419,10 +499,13 @@ function switchToDistricts() {
     map.on('click', districtClickHandler);
     
     map.setView(mapConfig.center, 7);
+    console.log('✅ Режим Районы активирован');
 }
 
 function switchToRegions() {
     if (currentMapMode === 'regions') return;
+    
+    console.log('🔄 Переключение на режим Области...');
     
     // Скрыть слой районов
     if (districtLayer) map.removeLayer(districtLayer);
@@ -440,7 +523,12 @@ function switchToRegions() {
     map.setView(mapConfig.center, 7);
     
     if (window.resetAllRegions) window.resetAllRegions();
+    console.log('✅ Режим Области активирован');
 }
+
+// ====================================================================
+// 9. ИНИЦИАЛИЗАЦИЯ
+// ====================================================================
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializePanelClosing);
