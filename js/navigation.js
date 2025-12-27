@@ -2,6 +2,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     const navButtons = document.querySelectorAll('.nav-btn');
     const dropdownItems = document.querySelectorAll('.dropdown-item');
+    const infoPanel = document.getElementById('infoPanel');
+    const closePanel = document.getElementById('closePanel');
+    
+    // Кнопка для закрытия панели
+    if (closePanel) {
+        closePanel.addEventListener('click', () => {
+            if (infoPanel) {
+                infoPanel.classList.remove('active');
+            }
+        });
+    }
     
     // Обработка кликов по основным кнопкам
     navButtons.forEach(button => {
@@ -41,19 +52,18 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Переключение на карту:', mapType);
         
         // Закрываем панель информации
-        const infoPanel = document.getElementById('info-panel');
         if (infoPanel) {
-            infoPanel.classList.add('hidden');
+            infoPanel.classList.remove('active');
         }
         
         // Определяем направление переключения
         switch(mapType) {
             case 'regions':
-                console.log('Активируем режим областей');
+                console.log('Активируем режим ОБЛАСТЕЙ');
                 switchToRegions();
                 break;
             case 'districts':
-                console.log('Активируем режим районов');
+                console.log('Активируем режим РАЙОНОВ');
                 switchToDistricts();
                 break;
             case 'hydrography':
@@ -69,3 +79,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+console.log('navigation.js загружен');
