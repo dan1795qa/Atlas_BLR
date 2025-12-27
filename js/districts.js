@@ -10,57 +10,75 @@ const districtNameMapping = {
     // Магилёвская область
     'Mogilev': 'Могилёвский',
     'Bobruysk': 'Бобруйский',
+    'Mogilev District': 'Могилёвский',
+    'Bobruisk District': 'Бобруйский',
     
     // Гомельская область
     'Gomel': 'Гомельский',
-    'Zhlobin': 'Гомельский', // Шлобин в области
     'Mozyr': 'Мозырский',
     'Rechytsa': 'Речицкий',
+    'Gomel District': 'Гомельский',
+    'Mozyr District': 'Мозырский',
+    'Rechitsa District': 'Речицкий',
     
     // Витебская область
     'Vitebsk': 'Витебский',
     'Polotsk': 'Полоцкий',
-    'Orsha': 'Орша',
-    'Novopolotsk': 'Новополоцк',
+    'Orsha': 'Витебский',
+    'Novopolotsk': 'Витебский',
+    'Vitebsk District': 'Витебский',
+    'Polotsk District': 'Полоцкий',
+    'Orsha District': 'Витебский',
+    'Novopolotsk District': 'Витебский',
     
     // Минская область
     'Minsk': 'Минский',
     'Borisov': 'Борисовский',
     'Myadel': 'Мядельский',
-    'Molodechno': 'Молодечно',
+    'Molodechno': 'Минский',
+    'Minsk District': 'Минский',
+    'Borisov District': 'Борисовский',
+    'Myadel District': 'Мядельский',
     
     // Гродненская область
     'Grodno': 'Гродненский',
     'Lida': 'Лидский',
-    'Slonim': 'Сломи',
+    'Slonim': 'Гродненский',
     'Baranovichi': 'Барановичский',
+    'Grodno District': 'Гродненский',
+    'Lida District': 'Лидский',
+    'Slonim District': 'Гродненский',
+    'Baranovichi District': 'Барановичский',
     
     // Брестская область
     'Brest': 'Брестский',
     'Pinsk': 'Пинский',
     'Kobrin': 'Кобринский',
-    'Baranowicze': 'Барановичский'
+    'Brest District': 'Брестский',
+    'Pinsk District': 'Пинский',
+    'Kobrin District': 'Кобринский',
+    'Baranovichi District': 'Барановичский',
+    'Baranovichskii': 'Барановичский'
 };
 
-// Отображаемые английские названия районов к русским
+// Отображение английского названия района на русское
 function mapDistrictName(geojsonName) {
     if (!geojsonName) return null;
     
-    // Пытаемся точно соответствовать
+    // Точный поиск
+    if (districtNameMapping[geojsonName]) {
+        return districtNameMapping[geojsonName];
+    }
+    
+    // Нечеткий поиск
     for (const [englishName, russianName] of Object.entries(districtNameMapping)) {
-        if (geojsonName === englishName) {
+        if (geojsonName && geojsonName.toLowerCase().includes(englishName.toLowerCase())) {
             return russianName;
         }
     }
     
-    // Ещё нечеткий поиск
-    for (const [englishName, russianName] of Object.entries(districtNameMapping)) {
-        if (geojsonName.toLowerCase().includes(englishName.toLowerCase())) {
-            return russianName;
-        }
-    }
-    
-    // Если ничего не найдено
+    // Если полностью не найдено, пытаемся привести к русскому виду
+    console.warn(`⚠️ Нет маппинга для '${geojsonName}', попытаемся использовать как есть`);
     return null;
 }
 
@@ -101,8 +119,10 @@ async function loadDistrictsData() {
         const missingDistricts = [];
         
         geojson.features.forEach(feature => {
-            const geojsonName = feature.properties.shapeName;
+            const geojsonName = feature.properties.shapeName || feature.properties.name;
             const mappedName = mapDistrictName(geojsonName);
+            console.log(`GeoJSON name: '${geojsonName}' -> Mapped: '${mappedName}'`);
+            
             if (mappedName && districtsInfo[mappedName]) {
                 foundDistricts.push(mappedName);
             } else {
@@ -111,7 +131,7 @@ async function loadDistrictsData() {
         });
         
         console.log('✅ Найдено объектов:', foundDistricts.length);
-        console.log('⚠️ Отсутствуют данные для (' + missingDistricts.length + '):', missingDistricts.slice(0, 5));
+        console.log('⚠️ Отсутствуют данные для (' + missingDistricts.length + '):', missingDistricts);
         
         addDistrictBoundaries(geojson);
         addDistrictMarkers();
@@ -137,7 +157,7 @@ function addDistrictBoundaries(geojson) {
         },
         onEachFeature: function(feature, layer) {
             // Получаем имя района из GeoJSON
-            const geojsonName = feature.properties.shapeName;
+            const geojsonName = feature.properties.shapeName || feature.properties.name;
             // Преобразуем к русскому
             const districtName = mapDistrictName(geojsonName);
             
@@ -146,37 +166,44 @@ function addDistrictBoundaries(geojson) {
                 return;
             }
             
+            if (!districtsInfo[districtName]) {
+                console.warn(`⚠️ Нет данных в districtsInfo для: ${districtName}`);
+                return;
+            }
+            
             layer.districtName = districtName;
             layer.options.interactive = true;
             
-            layer.on({
-                click: function(e) {
-                    console.log('🔍 Клик по району:', districtName);
-                    selectDistrict(layer, districtName);
-                    if (districtsInfo[districtName]) {
-                        showDistrictInfo(districtName);
-                    }
-                    zoomToDistrict(layer);
-                    L.DomEvent.stopPropagation(e);
-                },
-                mouseover: function() {
-                    if (selectedDistrict !== layer) {
-                        layer.setStyle({
-                            fillOpacity: 0.35,
-                            weight: 2,
-                            cursor: 'pointer'
-                        });
-                        layer.bringToFront();
-                    }
-                },
-                mouseout: function() {
-                    if (selectedDistrict !== layer) {
-                        layer.setStyle({
-                            fillOpacity: 0.25,
-                            weight: 1.5,
-                            cursor: 'default'
-                        });
-                    }
+            // Обработчик клика
+            layer.on('click', function(e) {
+                console.log('🔍 Клик по территории района:', districtName);
+                selectDistrict(layer, districtName);
+                if (districtsInfo[districtName]) {
+                    showDistrictInfo(districtName);
+                }
+                zoomToDistrict(layer);
+                L.DomEvent.stopPropagation(e);
+            });
+            
+            // Эффект наведения
+            layer.on('mouseover', function() {
+                if (selectedDistrict !== layer) {
+                    layer.setStyle({
+                        fillOpacity: 0.35,
+                        weight: 2,
+                        cursor: 'pointer'
+                    });
+                    layer.bringToFront();
+                }
+            });
+            
+            layer.on('mouseout', function() {
+                if (selectedDistrict !== layer) {
+                    layer.setStyle({
+                        fillOpacity: 0.25,
+                        weight: 1.5,
+                        cursor: 'default'
+                    });
                 }
             });
             
@@ -188,6 +215,8 @@ function addDistrictBoundaries(geojson) {
             });
         }
     }).addTo(map);
+    
+    console.log('✅ Границы районов добавлены на карту');
 }
 
 // Добавление маркеров районных центров
@@ -218,27 +247,29 @@ function addDistrictMarkers() {
         marker.districtName = districtName;
         marker.districtData = district;
         
-        marker.on({
-            click: function(e) {
-                console.log('🔍 Клик по маркеру:', districtName);
-                selectDistrictByMarker(districtName);
-                showDistrictInfo(districtName);
-                L.DomEvent.stopPropagation(e);
-            },
-            mouseover: function() {
-                marker.setStyle({
-                    radius: 9,
-                    weight: 3,
-                    fillOpacity: 1
-                });
-            },
-            mouseout: function() {
-                marker.setStyle({
-                    radius: 7,
-                    weight: 2,
-                    fillOpacity: 0.9
-                });
-            }
+        // Обработчик клика по маркеру
+        marker.on('click', function(e) {
+            console.log('🔍 Клик по маркеру района:', districtName);
+            selectDistrictByMarker(districtName);
+            showDistrictInfo(districtName);
+            L.DomEvent.stopPropagation(e);
+        });
+        
+        // Эффект наведения
+        marker.on('mouseover', function() {
+            marker.setStyle({
+                radius: 9,
+                weight: 3,
+                fillOpacity: 1
+            });
+        });
+        
+        marker.on('mouseout', function() {
+            marker.setStyle({
+                radius: 7,
+                weight: 2,
+                fillOpacity: 0.9
+            });
         });
         
         // Popup при клике на маркер
@@ -466,7 +497,7 @@ function switchToDistricts() {
         map.removeLayer(minskMarker);
     }
     
-    // Ново - загружаем районы
+    // Загружаем районы
     loadDistrictsData();
     currentMapMode = 'districts';
     
