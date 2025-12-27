@@ -163,6 +163,13 @@ header p {
     line-height: 1.5;
 }
 
+.popup-text {
+    color: #b0b0b0 !important;
+    font-size: 13px !important;
+    line-height: 1.4;
+    margin: 8px 0 !important;
+}
+
 /* District Popup Styles */
 .district-popup {
     padding: 15px 18px;
@@ -179,6 +186,217 @@ header p {
     border-bottom: 2px solid #37FF8B;
     padding-bottom: 6px;
     text-align: center;
+}
+
+/* Info Panel - Right sidebar */
+#info-panel {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 420px;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(26, 26, 26, 0.98) 0%, rgba(36, 36, 36, 0.98) 100%);
+    border-left: 3px solid #37FF8B;
+    box-shadow: -4px 0 20px rgba(55, 255, 139, 0.2);
+    z-index: 100;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: transform 0.3s ease;
+}
+
+#info-panel.hidden {
+    transform: translateX(100%);
+    display: none;
+}
+
+#region-info {
+    padding: 20px;
+    color: #e0e0e0;
+}
+
+/* Info Panel Header */
+.region-header {
+    border-bottom: 2px solid #37FF8B;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+}
+
+.region-header h2 {
+    color: #7cf578;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.region-capital,
+.region-capital-region {
+    color: #b0b0b0;
+    font-size: 14px;
+    margin: 6px 0;
+    line-height: 1.4;
+}
+
+.region-capital strong,
+.region-capital-region strong {
+    color: #7cf578;
+    font-weight: 600;
+}
+
+/* Info Section */
+.info-section {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(55, 255, 139, 0.2);
+}
+
+.info-section:last-child {
+    border-bottom: none;
+}
+
+.info-section h3 {
+    color: #37FF8B;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Info Grid */
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.info-item {
+    background: rgba(74, 124, 126, 0.3);
+    padding: 12px;
+    border-radius: 6px;
+    border-left: 3px solid #7cf578;
+    transition: all 0.2s ease;
+}
+
+.info-item:hover {
+    background: rgba(74, 124, 126, 0.5);
+    transform: translateX(2px);
+}
+
+.info-label {
+    display: block;
+    color: #b0b0b0;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.info-value {
+    display: block;
+    color: #7cf578;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* Center Description */
+.center-description {
+    color: #b0b0b0;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0 !important;
+    font-style: italic;
+    padding: 12px;
+    background: rgba(55, 255, 139, 0.08);
+    border-radius: 6px;
+    border-left: 3px solid #37FF8B;
+}
+
+/* Landmarks List */
+.landmarks-list {
+    list-style: none;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.landmarks-list li {
+    color: #e0e0e0;
+    font-size: 14px;
+    padding: 8px 12px;
+    margin: 6px 0;
+    background: rgba(124, 245, 120, 0.08);
+    border-radius: 4px;
+    border-left: 3px solid #7cf578;
+    line-height: 1.4;
+    transition: all 0.2s ease;
+}
+
+.landmarks-list li:hover {
+    background: rgba(124, 245, 120, 0.15);
+    transform: translateX(4px);
+    color: #7cf578;
+}
+
+/* Economy Tags */
+.economy-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.economy-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, rgba(55, 255, 139, 0.2) 0%, rgba(124, 245, 120, 0.1) 100%);
+    color: #7cf578;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(124, 245, 120, 0.4);
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: default;
+}
+
+.economy-tag:hover {
+    background: linear-gradient(135deg, rgba(55, 255, 139, 0.3) 0%, rgba(124, 245, 120, 0.2) 100%);
+    border-color: rgba(124, 245, 120, 0.6);
+    box-shadow: 0 2px 8px rgba(124, 245, 120, 0.2);
+}
+
+/* Region Description */
+.region-description {
+    color: #b0b0b0;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0 !important;
+    padding: 12px;
+    background: rgba(74, 124, 126, 0.2);
+    border-radius: 6px;
+    border-left: 3px solid #37FF8B;
+}
+
+/* Scrollbar Styling */
+#region-info::-webkit-scrollbar {
+    width: 8px;
+}
+
+#region-info::-webkit-scrollbar-track {
+    background: rgba(26, 26, 26, 0.5);
+}
+
+#region-info::-webkit-scrollbar-thumb {
+    background: #37FF8B;
+    border-radius: 4px;
+}
+
+#region-info::-webkit-scrollbar-thumb:hover {
+    background: #7cf578;
 }
 
 /* City Markers */
@@ -254,6 +472,18 @@ header p {
     box-shadow: 0 2px 8px rgba(55, 255, 139, 0.3) !important;
 }
 
+/* District Marker Label */
+.district-marker-label {
+    background: rgba(26, 26, 26, 0.9) !important;
+    border: 1px solid #7cf578 !important;
+    color: #7cf578 !important;
+    padding: 3px 8px !important;
+    border-radius: 4px !important;
+    font-weight: 500 !important;
+    font-size: 11px !important;
+    box-shadow: 0 2px 6px rgba(124, 245, 120, 0.3) !important;
+}
+
 /* Region Label */
 .region-label {
     background: rgba(124, 245, 120, 0.9) !important;
@@ -322,6 +552,14 @@ path.leaflet-interactive:focus {
         font-size: 14px !important;
     }
     
+    #info-panel {
+        width: 500px;
+    }
+    
+    .region-header h2 {
+        font-size: 24px;
+    }
+    
     .capital-label {
         font-size: 14px !important;
         padding: 4px 9px !important;
@@ -363,6 +601,14 @@ path.leaflet-interactive:focus {
     .popup-info p {
         font-size: 14px;
     }
+    
+    #info-panel {
+        width: 450px;
+    }
+    
+    .region-header h2 {
+        font-size: 20px;
+    }
 }
 
 /* Адаптивность для средних экранов (992px - 1199px) */
@@ -402,6 +648,18 @@ path.leaflet-interactive:focus {
     
     .popup-founded-desc {
         font-size: 12px !important;
+    }
+    
+    #info-panel {
+        width: 380px;
+    }
+    
+    #region-info {
+        padding: 16px;
+    }
+    
+    .region-header h2 {
+        font-size: 18px;
     }
     
     .capital-label {
@@ -458,6 +716,18 @@ path.leaflet-interactive:focus {
         font-size: 11px !important;
     }
     
+    #info-panel {
+        width: 360px;
+    }
+    
+    #region-info {
+        padding: 14px;
+    }
+    
+    .region-header h2 {
+        font-size: 16px;
+    }
+    
     .capital-label {
         font-size: 11px !important;
         padding: 2px 6px !important;
@@ -511,6 +781,20 @@ path.leaflet-interactive:focus {
     
     .popup-founded-desc {
         font-size: 11px !important;
+    }
+    
+    #info-panel {
+        width: 100%;
+        border-left: none;
+        border-top: 3px solid #37FF8B;
+    }
+    
+    #region-info {
+        padding: 12px;
+    }
+    
+    .region-header h2 {
+        font-size: 14px;
     }
     
     .capital-label {
@@ -574,6 +858,21 @@ path.leaflet-interactive:focus {
         padding-left: 8px;
     }
     
+    #info-panel {
+        width: 100%;
+        border-left: none;
+        border-top: 3px solid #37FF8B;
+        z-index: 200;
+    }
+    
+    #region-info {
+        padding: 10px;
+    }
+    
+    .region-header h2 {
+        font-size: 12px;
+    }
+    
     .capital-label {
         font-size: 9px !important;
         padding: 1px 4px !important;
@@ -629,6 +928,20 @@ path.leaflet-interactive:focus {
     .popup-founded-desc {
         font-size: 9px !important;
     }
+    
+    #info-panel {
+        width: 100%;
+        border-left: none;
+        border-top: 2px solid #37FF8B;
+    }
+    
+    #region-info {
+        padding: 8px;
+    }
+    
+    .region-header h2 {
+        font-size: 11px;
+    }
 }
 
 /* Ориентация landscape для мобильных устройств */
@@ -662,6 +975,15 @@ path.leaflet-interactive:focus {
     
     .popup-info p {
         font-size: 11px;
+    }
+    
+    #info-panel {
+        width: 50%;
+        max-width: 350px;
+    }
+    
+    #region-info {
+        padding: 12px;
     }
     
     .capital-label {
