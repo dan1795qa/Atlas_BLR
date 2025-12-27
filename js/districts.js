@@ -235,8 +235,8 @@ function createDistrictPopupContent(district) {
                 <p class="popup-founded"><strong>📅 Основана:</strong> ${foundedYear}${district.founded ? ' г.' : ''}</p>
                 ${foundedDesc ? `<p class="popup-text">💭 ${foundedDesc}</p>` : ''}
                 <p><strong>👥 Население:</strong> ${district.population}</p>
-                <p><strong>📋 Площадь:</strong> ${district.area} км²</p>
-                <p><strong>📊 Плотность:</strong> ${district.density} чел/км²</p>
+                <p><strong>📋 Площадь:</strong> ${district.area}</p>
+                <p><strong>📊 Плотность:</strong> ${district.density}</p>
             </div>
         </div>
     `;
@@ -318,6 +318,13 @@ function showDistrictInfo(districtName) {
         return;
     }
     
+    // Форматирование плотности: извлекаем число и округляем
+    const densityValue = districtData.density
+        ? districtData.density.toString().split(' ')[0] // извлекаем число без "чел/км²"
+        : '—';
+    const densityRounded = densityValue !== '—' ? Math.round(parseFloat(densityValue.replace(',', '.'))) : '—';
+    const densityFormatted = densityRounded !== '—' ? `${densityRounded} чел/км²` : '—';
+    
     regionInfo.innerHTML = `
         <div class="region-header">
             <h2>🏁 ${districtData.name}</h2>
@@ -330,7 +337,7 @@ function showDistrictInfo(districtName) {
             <div class="info-grid">
                 <div class="info-item">
                     <span class="info-label">📋 Площадь</span>
-                    <span class="info-value">${districtData.area} км²</span>
+                    <span class="info-value">${districtData.area}</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">👥 Население</span>
@@ -338,7 +345,7 @@ function showDistrictInfo(districtName) {
                 </div>
                 <div class="info-item">
                     <span class="info-label">📊 Плотность</span>
-                    <span class="info-value">${districtData.density} чел/км²</span>
+                    <span class="info-value">${densityFormatted}</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">📅 Основана</span>
