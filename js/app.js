@@ -55,12 +55,19 @@ function initMap() {
 
     loadRegionsData();
 
-    document.getElementById('close-panel').addEventListener('click', () => {
-        document.getElementById('info-panel').classList.add('hidden');
-        resetAllRegions();
-        // Возвращаем карту к исходному виду
-        map.setView(mapConfig.center, 7);
-    });
+    // Обработчик закрытия панели
+    const closePanel = document.getElementById('closePanel');
+    const infoPanel = document.getElementById('infoPanel');
+    
+    if (closePanel) {
+        closePanel.addEventListener('click', () => {
+            if (infoPanel) {
+                infoPanel.classList.remove('active');
+            }
+            resetAllRegions();
+            map.setView(mapConfig.center, 7);
+        });
+    }
     
     map.on('focus', function() {
         map.getContainer().blur();
@@ -72,7 +79,9 @@ function initMap() {
     // Сброс выделения при клике на карту (для режима областей)
     regionClickHandler = function() {
         resetAllRegions();
-        document.getElementById('info-panel').classList.add('hidden');
+        if (infoPanel) {
+            infoPanel.classList.remove('active');
+        }
         map.setView(mapConfig.center, 7);
     };
     map.on('click', regionClickHandler);
@@ -131,6 +140,27 @@ async function loadRegionsData() {
         console.error('Ошибка загрузки GeoJSON:', error);
     }
 }
+
+// Публичная функция для загрузки регионов (используется из districts.js)
+window.loadRegions = function() {
+    console.log('Нагружение регионов...');
+    // Обновляем карту
+    updateMarkersVisibility();
+};
+
+// Глобальная функция switchToRegions для districts.js
+window.switchToRegionsOriginal = function() {
+    console.log('Переключение на регионы из districts.js');
+    // Основная логика уже реализована в districts.js
+    // Это функция может активировать данные регионов
+    if (regionsLayer) {
+        map.addLayer(regionsLayer);
+    }
+    if (minskLayer) {
+        map.addLayer(minskLayer);
+    }
+    updateMarkersVisibility();
+};
 
 // Добавление границ областей
 function addRegionBoundaries(geoJSON) {
@@ -304,22 +334,22 @@ function showRegionInfo(regionName) {
         return;
     }
 
-    const infoPanel = document.getElementById('info-panel');
-    const regionInfo = document.getElementById('region-info');
+    const infoPanel = document.getElementById('infoPanel');
+    const infoPanelContent = document.getElementById('infoPanelContent');
     
-    if (!infoPanel || !regionInfo) {
+    if (!infoPanel || !infoPanelContent) {
         console.error('Элементы панели не найдены');
         return;
     }
     
-    regionInfo.innerHTML = `
+    infoPanelContent.innerHTML = `
         <div class="region-header">
             <h2>${regionData.name}</h2>
-            <p class="region-capital">🏛️ ${regionName === "Минск" ? "Столица Республики Беларусь" : "Административный центр: " + regionData.capital}</p>
+            <p class="region-capital">🃄 ${regionName === "Минск" ? "Столица Республики Беларусь" : "Административный центр: " + regionData.capital}</p>
         </div>
 
         <div class="info-section">
-            <h3>📊 Общие данные</h3>
+            <h3>📈 Общие данные</h3>
             <div class="info-grid">
                 <div class="info-item">
                     <span class="info-label">Площадь</span>
@@ -354,7 +384,7 @@ function showRegionInfo(regionName) {
         </div>
 
         <div class="info-section">
-            <h3>⛪ Религиозный состав</h3>
+            <h3>⚪ Религиозный состав</h3>
             <ul class="info-list">
                 ${regionData.religion.map(r => 
                     `<li><span>${r.name}</span><span class="percentage">${r.percent}</span></li>`
@@ -393,8 +423,8 @@ function showRegionInfo(regionName) {
         </div>
     `;
     
-    infoPanel.classList.remove('hidden');
-    regionInfo.scrollTop = 0;
+    infoPanel.classList.add('active');
+    infoPanelContent.scrollTop = 0;
 }
 
 // Добавление маркера для города Минска
@@ -579,3 +609,5 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM загружен, запуск приложения...');
     initMap();
 });
+
+console.log('app.js загружен');
