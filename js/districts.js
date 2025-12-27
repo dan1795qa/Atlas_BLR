@@ -11,7 +11,7 @@ let districtClickHandler;
 console.log('🔍 [Districts] Модуль загружен');
 
 // ====================================================================
-// 1. ПРИМЕЧАНИЕ: ПОВОРАЦИВАНИЕ ДАННыХ
+// 1. ПРИМЕЧАНИЕ: ПОВОРАЦИВАНИЕ ДАННЫХ
 // ====================================================================
 
 // Правка имен для грамотного совпадения
@@ -137,17 +137,18 @@ function addDistrictBoundaries(geojson) {
             layer.districtName = districtDataName;
             layer.districtData = districtData;
             
-            // КЛИК
+            // КЛИК - основной обработчик
             layer.on('click', function(e) {
-                console.log('🔍 [Districts] Клик по территории:', districtDataName);
+                console.log('✅ [Districts] КЛИК СРАБОТАЛ! Район:', districtDataName);
+                L.DomEvent.stopPropagation(e);
                 selectDistrict(layer);
                 showDistrictInfo(districtDataName);
                 zoomToDistrict(layer);
-                L.DomEvent.stopPropagation(e);
             });
             
             // НАВЕДЕНИЕ
             layer.on('mouseover', function() {
+                console.log('🔄 [Districts] Наведение на:', districtDataName);
                 if (selectedDistrictLayer !== layer) {
                     layer.setStyle({
                         fillOpacity: 0.35,
@@ -177,7 +178,10 @@ function addDistrictBoundaries(geojson) {
         }
     }).addTo(map);
     
-    console.log('✅ [Districts] Границы добавлены');
+    // Убедимся, что слой в переднем плане
+    districtLayer.bringToFront();
+    
+    console.log('✅ [Districts] Границы добавлены и готовы к клику');
 }
 
 // ====================================================================
@@ -202,17 +206,18 @@ function addDistrictMarkers() {
             weight: 2,
             opacity: 1,
             fillOpacity: 0.9,
-            className: 'district-marker'
+            className: 'district-marker',
+            interactive: true
         }).addTo(map);
         
         marker.districtName = districtName;
         marker.districtData = districtData;
         
         marker.on('click', function(e) {
-            console.log('🔍 [Districts] Клик по маркеру:', districtName);
+            console.log('✅ [Districts] Клик по маркеру:', districtName);
+            L.DomEvent.stopPropagation(e);
             selectDistrictByMarker(districtName);
             showDistrictInfo(districtName);
-            L.DomEvent.stopPropagation(e);
         });
         
         marker.on('mouseover', function() {
@@ -290,6 +295,7 @@ function selectDistrict(layer) {
         });
         layer.bringToFront();
         selectedDistrictLayer = layer;
+        console.log('✅ [Districts] Район выделен:', layer.districtName);
     }
 }
 
@@ -365,7 +371,7 @@ function showDistrictInfo(districtName) {
         ? districtData.density.toString().split(' ')[0]
         : '—';
     const densityRounded = densityValue !== '—' 
-        ? Math.round(parseFloat(densityValue.replace(',', '.')))
+        ? Math.round(parseFloat(densityValue.replace(',', '.')));
         : '—';
     const densityFormatted = densityRounded !== '—' 
         ? `${densityRounded} чел/км²`
@@ -470,7 +476,7 @@ window.switchToDistricts = function() {
     map.on('click', districtClickHandler);
     
     map.setView(mapConfig.center, 7);
-    console.log('✅ [Districts] Режим включен');
+    console.log('✅ [Districts] Режим районов включен');
 };
 
 window.switchToRegions = function() {
@@ -495,7 +501,7 @@ window.switchToRegions = function() {
 };
 
 // ====================================================================
-// 9. ИНИЦИАЛизАЦИЯ
+// 9. ИНИЦИАЛИЗАЦИЯ
 // ====================================================================
 
 if (document.readyState === 'loading') {
