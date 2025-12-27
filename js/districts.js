@@ -1,84 +1,92 @@
 // Управление слоем районов
-let districtsLayer;
+let districtLayer;
 let districtMarkers = [];
-let selectedDistrict = null;
+let selectedDistrictLayer;
 let currentMapMode = 'regions'; // 'regions' или 'districts'
 let districtClickHandler;
 
-// Полный маппинг названий районов из GeoJSON на русские
+// Расширенный маппинг названий районов из GeoJSON на русские
 const districtNameMapping = {
-    // Магилёвская область
-    'Mogilev': 'Могилёвский',
-    'Bobruysk': 'Бобруйский',
-    'Mogilev District': 'Могилёвский',
-    'Bobruisk District': 'Бобруйский',
+    // Брестская область
+    'brest': 'Брестский',
+    'broysk': 'Брестский',
+    'brest district': 'Брестский',
+    'baranovichi': 'Барановичский',
+    'baranowici': 'Барановичский',
+    'baranovichi district': 'Барановичский',
+    'pinsk': 'Пинский',
+    'pinsk district': 'Пинский',
+    'kobrin': 'Кобринский',
+    'kobrin district': 'Кобринский',
     
     // Гомельская область
-    'Gomel': 'Гомельский',
-    'Mozyr': 'Мозырский',
-    'Rechytsa': 'Речицкий',
-    'Gomel District': 'Гомельский',
-    'Mozyr District': 'Мозырский',
-    'Rechitsa District': 'Речицкий',
+    'gomel': 'Гомельский',
+    'homiel': 'Гомельский',
+    'gomel district': 'Гомельский',
+    'mozyr': 'Мозырский',
+    'mozyr district': 'Мозырский',
+    'rechitsa': 'Речицкий',
+    'rechytsa': 'Речицкий',
+    'rechitsa district': 'Речицкий',
     
     // Витебская область
-    'Vitebsk': 'Витебский',
-    'Polotsk': 'Полоцкий',
-    'Orsha': 'Витебский',
-    'Novopolotsk': 'Витебский',
-    'Vitebsk District': 'Витебский',
-    'Polotsk District': 'Полоцкий',
-    'Orsha District': 'Витебский',
-    'Novopolotsk District': 'Витебский',
+    'vitebsk': 'Витебский',
+    'vitebsk district': 'Витебский',
+    'polock': 'Полоцкий',
+    'polatsk': 'Полоцкий',
+    'polotsk': 'Полоцкий',
+    'polock district': 'Полоцкий',
+    'orsha': 'Витебский',
+    'orsha district': 'Витебский',
+    'novopolotsk': 'Витебский',
     
     // Минская область
-    'Minsk': 'Минский',
-    'Borisov': 'Борисовский',
-    'Myadel': 'Мядельский',
-    'Molodechno': 'Минский',
-    'Minsk District': 'Минский',
-    'Borisov District': 'Борисовский',
-    'Myadel District': 'Мядельский',
+    'minsk': 'Минский',
+    'minsk district': 'Минский',
+    'borisov': 'Борисовский',
+    'borisov district': 'Борисовский',
+    'myadel': 'Мядельский',
+    'myadel district': 'Мядельский',
+    'molodechno': 'Минский',
+    'molodechno district': 'Минский',
     
     // Гродненская область
-    'Grodno': 'Гродненский',
-    'Lida': 'Лидский',
-    'Slonim': 'Гродненский',
-    'Baranovichi': 'Барановичский',
-    'Grodno District': 'Гродненский',
-    'Lida District': 'Лидский',
-    'Slonim District': 'Гродненский',
-    'Baranovichi District': 'Барановичский',
+    'grodno': 'Гродненский',
+    'grodno district': 'Гродненский',
+    'lida': 'Лидский',
+    'lida district': 'Лидский',
+    'slonim': 'Гродненский',
+    'slonim district': 'Гродненский',
     
-    // Брестская область
-    'Brest': 'Брестский',
-    'Pinsk': 'Пинский',
-    'Kobrin': 'Кобринский',
-    'Brest District': 'Брестский',
-    'Pinsk District': 'Пинский',
-    'Kobrin District': 'Кобринский',
-    'Baranovichi District': 'Барановичский',
-    'Baranovichskii': 'Барановичский'
+    // Могилёвская область
+    'mogilev': 'Могилёвский',
+    'mogiljow': 'Могилёвский',
+    'mogilev district': 'Могилёвский',
+    'bobruysk': 'Бобруйский',
+    'bobrujsk': 'Бобруйский',
+    'bobruisk district': 'Бобруйский',
+    'bobruysk district': 'Бобруйский'
 };
 
 // Отображение английского названия района на русское
 function mapDistrictName(geojsonName) {
     if (!geojsonName) return null;
     
+    const normalized = geojsonName.toLowerCase().trim();
+    
     // Точный поиск
-    if (districtNameMapping[geojsonName]) {
-        return districtNameMapping[geojsonName];
+    if (districtNameMapping[normalized]) {
+        return districtNameMapping[normalized];
     }
     
-    // Нечеткий поиск
-    for (const [englishName, russianName] of Object.entries(districtNameMapping)) {
-        if (geojsonName && geojsonName.toLowerCase().includes(englishName.toLowerCase())) {
-            return russianName;
+    // Проверка частичных совпадений
+    for (const [key, value] of Object.entries(districtNameMapping)) {
+        if (normalized.includes(key) || key.includes(normalized)) {
+            return value;
         }
     }
     
-    // Если полностью не найдено, пытаемся привести к русскому виду
-    console.warn(`⚠️ Нет маппинга для '${geojsonName}', попытаемся использовать как есть`);
+    console.warn(`⚠️ Нет маппинга для '${geojsonName}'`);
     return null;
 }
 
@@ -119,19 +127,21 @@ async function loadDistrictsData() {
         const missingDistricts = [];
         
         geojson.features.forEach(feature => {
-            const geojsonName = feature.properties.shapeName || feature.properties.name;
+            const geojsonName = feature.properties.shapeName || feature.properties.name || feature.properties.NAME || feature.properties.DISTRICT;
             const mappedName = mapDistrictName(geojsonName);
             console.log(`GeoJSON name: '${geojsonName}' -> Mapped: '${mappedName}'`);
             
             if (mappedName && districtsInfo[mappedName]) {
                 foundDistricts.push(mappedName);
-            } else {
+            } else if (geojsonName) {
                 missingDistricts.push(geojsonName);
             }
         });
         
         console.log('✅ Найдено объектов:', foundDistricts.length);
-        console.log('⚠️ Отсутствуют данные для (' + missingDistricts.length + '):', missingDistricts);
+        if (missingDistricts.length > 0) {
+            console.log('⚠️ Отсутствуют данные для (' + missingDistricts.length + '):', missingDistricts);
+        }
         
         addDistrictBoundaries(geojson);
         addDistrictMarkers();
@@ -143,7 +153,7 @@ async function loadDistrictsData() {
 
 // Добавление границ районов на карту
 function addDistrictBoundaries(geojson) {
-    districtsLayer = L.geoJSON(geojson, {
+    districtLayer = L.geoJSON(geojson, {
         style: function(feature) {
             return {
                 fillColor: '#4a7c7e',
@@ -157,7 +167,7 @@ function addDistrictBoundaries(geojson) {
         },
         onEachFeature: function(feature, layer) {
             // Получаем имя района из GeoJSON
-            const geojsonName = feature.properties.shapeName || feature.properties.name;
+            const geojsonName = feature.properties.shapeName || feature.properties.name || feature.properties.NAME || feature.properties.DISTRICT;
             // Преобразуем к русскому
             const districtName = mapDistrictName(geojsonName);
             
@@ -187,7 +197,7 @@ function addDistrictBoundaries(geojson) {
             
             // Эффект наведения
             layer.on('mouseover', function() {
-                if (selectedDistrict !== layer) {
+                if (selectedDistrictLayer !== layer) {
                     layer.setStyle({
                         fillOpacity: 0.35,
                         weight: 2,
@@ -198,7 +208,7 @@ function addDistrictBoundaries(geojson) {
             });
             
             layer.on('mouseout', function() {
-                if (selectedDistrict !== layer) {
+                if (selectedDistrictLayer !== layer) {
                     layer.setStyle({
                         fillOpacity: 0.25,
                         weight: 1.5,
@@ -232,7 +242,7 @@ function addDistrictMarkers() {
             continue;
         }
         
-        const marker = L.circleMarker([coords[1], coords[0]], {
+        const marker = L.circleMarker([coords[0], coords[1]], {
             radius: 7,
             fillColor: '#7cf578',
             color: '#37FF8B',
@@ -329,7 +339,7 @@ function selectDistrict(layer, districtName) {
         });
         
         layer.bringToFront();
-        selectedDistrict = layer;
+        selectedDistrictLayer = layer;
     }
 }
 
@@ -338,8 +348,8 @@ function selectDistrictByMarker(districtName) {
     resetAllDistricts();
     
     // Найдем и выделим основные границы района
-    if (districtsLayer) {
-        districtsLayer.eachLayer(function(layer) {
+    if (districtLayer) {
+        districtLayer.eachLayer(function(layer) {
             if (layer.districtName === districtName) {
                 layer.setStyle({
                     fillColor: '#7cf578',
@@ -348,7 +358,7 @@ function selectDistrictByMarker(districtName) {
                     color: '#7cf578'
                 });
                 layer.bringToFront();
-                selectedDistrict = layer;
+                selectedDistrictLayer = layer;
             }
         });
     }
@@ -356,8 +366,8 @@ function selectDistrictByMarker(districtName) {
 
 // Сброс всех выделений районов
 function resetAllDistricts() {
-    if (districtsLayer) {
-        districtsLayer.eachLayer(function(layer) {
+    if (districtLayer) {
+        districtLayer.eachLayer(function(layer) {
             layer.setStyle({
                 fillColor: '#4a7c7e',
                 weight: 1.5,
@@ -367,7 +377,7 @@ function resetAllDistricts() {
         });
     }
     
-    selectedDistrict = null;
+    selectedDistrictLayer = null;
 }
 
 // Приближение к району
@@ -479,22 +489,24 @@ function switchToDistricts() {
     console.log('🔁 Переключаюсь на районы...');
     
     // Скрываем регионы
-    if (regionsLayer) {
-        map.removeLayer(regionsLayer);
+    if (window.regionsLayer) {
+        map.removeLayer(window.regionsLayer);
     }
-    if (minskLayer) {
-        map.removeLayer(minskLayer);
+    if (window.minskLayer) {
+        map.removeLayer(window.minskLayer);
     }
     
     // Удаляем маркеры городов
-    cityMarkers.forEach(city => {
-        if (map.hasLayer(city.marker)) {
-            map.removeLayer(city.marker);
-        }
-    });
+    if (window.cityMarkers) {
+        window.cityMarkers.forEach(city => {
+            if (city && city.marker && map.hasLayer(city.marker)) {
+                map.removeLayer(city.marker);
+            }
+        });
+    }
     
-    if (minskMarker && map.hasLayer(minskMarker)) {
-        map.removeLayer(minskMarker);
+    if (window.minskMarker && map.hasLayer(window.minskMarker)) {
+        map.removeLayer(window.minskMarker);
     }
     
     // Загружаем районы
@@ -502,7 +514,9 @@ function switchToDistricts() {
     currentMapMode = 'districts';
     
     // Обновляем обработчик клика на карту
-    map.off('click', districtClickHandler);
+    if (districtClickHandler) {
+        map.off('click', districtClickHandler);
+    }
     districtClickHandler = function(e) {
         resetAllDistricts();
         const panel = document.getElementById('info-panel');
@@ -527,8 +541,8 @@ function switchToRegions() {
     console.log('🔁 Переключаюсь на области...');
     
     // Скрываем районы
-    if (districtsLayer) {
-        map.removeLayer(districtsLayer);
+    if (districtLayer) {
+        map.removeLayer(districtLayer);
     }
     
     // Удаляем маркеры районов
@@ -539,7 +553,9 @@ function switchToRegions() {
     });
     
     // Очищаем старый обработчик
-    map.off('click', districtClickHandler);
+    if (districtClickHandler) {
+        map.off('click', districtClickHandler);
+    }
     
     // Перегружаем регионы
     loadRegionsData();
@@ -547,7 +563,9 @@ function switchToRegions() {
     
     // Берем к стандартному виду
     map.setView(mapConfig.center, 7);
-    resetAllRegions();
+    if (window.resetAllRegions) {
+        window.resetAllRegions();
+    }
     
     console.log('✅ Модуль областей активирован');
 }
