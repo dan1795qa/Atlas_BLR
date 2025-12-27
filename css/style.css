@@ -189,7 +189,7 @@ header p {
 }
 
 /* Info Panel - Right sidebar */
-#info-panel {
+#infoPanel {
     position: absolute;
     right: 0;
     top: 0;
@@ -202,19 +202,49 @@ header p {
     overflow-y: auto;
     overflow-x: hidden;
     transition: transform 0.3s ease;
-}
-
-#info-panel.hidden {
     transform: translateX(100%);
-    display: none;
 }
 
-#region-info {
+#infoPanel.active {
+    transform: translateX(0);
+}
+
+#infoPanelContent {
     padding: 20px;
     color: #e0e0e0;
 }
 
-/* Info Panel Header */
+/* District Info Styles */
+.district-info {
+    padding: 0;
+    color: #e0e0e0;
+}
+
+.district-info h2 {
+    color: #7cf578;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    border-bottom: 2px solid #37FF8B;
+    padding-bottom: 10px;
+}
+
+.region-badge {
+    color: #b0b0b0;
+    font-size: 14px;
+    margin: 8px 0;
+    padding: 8px 12px;
+    background: rgba(74, 124, 126, 0.3);
+    border-radius: 4px;
+    border-left: 3px solid #7cf578;
+}
+
+.region-badge strong {
+    color: #7cf578;
+    font-weight: 600;
+}
+
+/* Info Header */
 .region-header {
     border-bottom: 2px solid #37FF8B;
     padding-bottom: 16px;
@@ -256,7 +286,8 @@ header p {
     border-bottom: none;
 }
 
-.info-section h3 {
+.info-section h3,
+.info-section h4 {
     color: #37FF8B;
     font-size: 16px;
     font-weight: 600;
@@ -264,6 +295,41 @@ header p {
     display: flex;
     align-items: center;
     gap: 6px;
+}
+
+.info-section h4 {
+    font-size: 14px;
+}
+
+.info-section p {
+    color: #b0b0b0;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 8px 0;
+}
+
+.info-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.info-section li {
+    color: #e0e0e0;
+    font-size: 14px;
+    padding: 8px 12px;
+    margin: 6px 0;
+    background: rgba(124, 245, 120, 0.08);
+    border-radius: 4px;
+    border-left: 3px solid #7cf578;
+    line-height: 1.4;
+    transition: all 0.2s ease;
+}
+
+.info-section li:hover {
+    background: rgba(124, 245, 120, 0.15);
+    transform: translateX(4px);
+    color: #7cf578;
 }
 
 /* Info Grid */
@@ -284,6 +350,23 @@ header p {
 .info-item:hover {
     background: rgba(74, 124, 126, 0.5);
     transform: translateX(2px);
+}
+
+.info-item .label {
+    display: block;
+    color: #b0b0b0;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.info-item .value {
+    display: block;
+    color: #7cf578;
+    font-size: 15px;
+    font-weight: 600;
 }
 
 .info-label {
@@ -381,21 +464,60 @@ header p {
     border-left: 3px solid #37FF8B;
 }
 
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(55, 255, 139, 0.2);
+    color: #7cf578;
+    font-size: 24px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.close-btn:hover {
+    background: rgba(55, 255, 139, 0.4);
+    color: #37FF8B;
+}
+
 /* Scrollbar Styling */
-#region-info::-webkit-scrollbar {
+#infoPanelContent::-webkit-scrollbar {
     width: 8px;
 }
 
-#region-info::-webkit-scrollbar-track {
+#infoPanelContent::-webkit-scrollbar-track {
     background: rgba(26, 26, 26, 0.5);
 }
 
-#region-info::-webkit-scrollbar-thumb {
+#infoPanelContent::-webkit-scrollbar-thumb {
     background: #37FF8B;
     border-radius: 4px;
 }
 
-#region-info::-webkit-scrollbar-thumb:hover {
+#infoPanelContent::-webkit-scrollbar-thumb:hover {
+    background: #7cf578;
+}
+
+#infoPanel::-webkit-scrollbar {
+    width: 8px;
+}
+
+#infoPanel::-webkit-scrollbar-track {
+    background: rgba(26, 26, 26, 0.5);
+}
+
+#infoPanel::-webkit-scrollbar-thumb {
+    background: #37FF8B;
+    border-radius: 4px;
+}
+
+#infoPanel::-webkit-scrollbar-thumb:hover {
     background: #7cf578;
 }
 
@@ -552,11 +674,15 @@ path.leaflet-interactive:focus {
         font-size: 14px !important;
     }
     
-    #info-panel {
+    #infoPanel {
         width: 500px;
     }
     
     .region-header h2 {
+        font-size: 24px;
+    }
+    
+    .district-info h2 {
         font-size: 24px;
     }
     
@@ -602,11 +728,15 @@ path.leaflet-interactive:focus {
         font-size: 14px;
     }
     
-    #info-panel {
+    #infoPanel {
         width: 450px;
     }
     
     .region-header h2 {
+        font-size: 20px;
+    }
+    
+    .district-info h2 {
         font-size: 20px;
     }
 }
@@ -650,15 +780,19 @@ path.leaflet-interactive:focus {
         font-size: 12px !important;
     }
     
-    #info-panel {
+    #infoPanel {
         width: 380px;
     }
     
-    #region-info {
+    #infoPanelContent {
         padding: 16px;
     }
     
     .region-header h2 {
+        font-size: 18px;
+    }
+    
+    .district-info h2 {
         font-size: 18px;
     }
     
@@ -716,15 +850,19 @@ path.leaflet-interactive:focus {
         font-size: 11px !important;
     }
     
-    #info-panel {
+    #infoPanel {
         width: 360px;
     }
     
-    #region-info {
+    #infoPanelContent {
         padding: 14px;
     }
     
     .region-header h2 {
+        font-size: 16px;
+    }
+    
+    .district-info h2 {
         font-size: 16px;
     }
     
@@ -783,17 +921,21 @@ path.leaflet-interactive:focus {
         font-size: 11px !important;
     }
     
-    #info-panel {
+    #infoPanel {
         width: 100%;
         border-left: none;
         border-top: 3px solid #37FF8B;
     }
     
-    #region-info {
+    #infoPanelContent {
         padding: 12px;
     }
     
     .region-header h2 {
+        font-size: 14px;
+    }
+    
+    .district-info h2 {
         font-size: 14px;
     }
     
@@ -858,18 +1000,22 @@ path.leaflet-interactive:focus {
         padding-left: 8px;
     }
     
-    #info-panel {
+    #infoPanel {
         width: 100%;
         border-left: none;
         border-top: 3px solid #37FF8B;
         z-index: 200;
     }
     
-    #region-info {
+    #infoPanelContent {
         padding: 10px;
     }
     
     .region-header h2 {
+        font-size: 12px;
+    }
+    
+    .district-info h2 {
         font-size: 12px;
     }
     
@@ -929,17 +1075,21 @@ path.leaflet-interactive:focus {
         font-size: 9px !important;
     }
     
-    #info-panel {
+    #infoPanel {
         width: 100%;
         border-left: none;
         border-top: 2px solid #37FF8B;
     }
     
-    #region-info {
+    #infoPanelContent {
         padding: 8px;
     }
     
     .region-header h2 {
+        font-size: 11px;
+    }
+    
+    .district-info h2 {
         font-size: 11px;
     }
 }
@@ -977,12 +1127,12 @@ path.leaflet-interactive:focus {
         font-size: 11px;
     }
     
-    #info-panel {
+    #infoPanel {
         width: 50%;
         max-width: 350px;
     }
     
-    #region-info {
+    #infoPanelContent {
         padding: 12px;
     }
     
